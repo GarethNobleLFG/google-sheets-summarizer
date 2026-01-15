@@ -1,8 +1,8 @@
-const { authenticate, getSheetData } = require('../utils/google-sheets-utils/googleSheetsApi');
-const { convertToCSVString } = require('../utils/google-sheets-utils/dataFormatter');
-const { analyzeDataTypes } = require('../utils/google-sheets-utils/dataAnalyzer');
+const { authenticate, getSheetData } = require('../../utils/google-sheets-utils/googleSheetsApi');
+const { convertToCSVString } = require('../../utils/google-sheets-utils/dataFormatter');
+const { analyzeDataTypes } = require('../../utils/google-sheets-utils/dataAnalyzer');
 const { generateAIContext } = require('../utils/google-sheets-utils/aiHelper');
-const { extractSpreadsheetId } = require('../utils/google-sheets-utils/urlHelper');
+const { extractSpreadsheetId } = require('../../utils/google-sheets-utils/urlHelper');
 
 
 async function processSheetForAI(spreadsheetUrl, options = {}) {
@@ -15,7 +15,7 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
             credentialsPath = '../credentials.json'
         } = options;
 
-        
+
         // Extract the spreadsheet ID.
         const spreadsheetId = extractSpreadsheetId(spreadsheetUrl);
 
@@ -104,11 +104,6 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
 
 
 
-        // Step 9: Create AI prompt context with general info about the Google sheet.
-        const aiContext = generateAIContext(headers, summary, csvContent);
-
-
-
 
         // Complete result object
         const result = {
@@ -119,7 +114,6 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
 
             // Processed formats
             csvContent,
-            aiReadyData,
 
             // Metadata and analysis
             summary,
