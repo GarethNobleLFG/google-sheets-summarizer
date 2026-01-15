@@ -18,8 +18,11 @@
   },
   "homepage": "https://github.com/GarethNobleLFG/google-sheets-summarizer#readme",
   "dependencies": {
+    "csv-parser": "^3.2.0",
+    "csv-writer": "^1.6.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "googleapis": "^170.0.0",
     "nodemon": "^3.1.11"
   }
 }
