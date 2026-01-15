@@ -8,6 +8,7 @@ const openai = new OpenAI({
 
 
 const spreadsheetUrl = process.env.GOOGLE_SHEET_URL;
+const sheetName = process.env.SHEET_NAME;
 
 
 async function weeklySheetSummary() {
@@ -15,9 +16,9 @@ async function weeklySheetSummary() {
 
         // Step 1: Process and get result from google sheet using the URL.
         const sheetData = await processSheetForAI(spreadsheetUrl, {
-            range: 'A:Z',
+            range: `${sheetName}!A:Z`, // Target the specific sheet.
             filterEmptyRows: true,
-            maxPreviewRows: 10
+            maxPreviewRows: 100
         });
 
         if (!sheetData.success) {
