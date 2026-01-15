@@ -2,11 +2,10 @@ const { authenticate, getSheetData } = require('../utils/google-sheets-utils/goo
 const { convertToCSVString } = require('../utils/google-sheets-utils/dataFormatter');
 const { analyzeDataTypes } = require('../utils/google-sheets-utils/dataAnalyzer');
 const { generateAIContext } = require('../utils/google-sheets-utils/aiHelper');
+const { extractSpreadsheetId } = require('../utils/google-sheets-utils/urlHelper');
 
 
-
-
-async function processSheetForAI(spreadsheetId, options = {}) {
+async function processSheetForAI(spreadsheetUrl, options = {}) {
     try {
         const {
             range = 'A:Z',
@@ -16,6 +15,11 @@ async function processSheetForAI(spreadsheetId, options = {}) {
             credentialsPath = '../credentials.json'
         } = options;
 
+        
+        // Extract the spreadsheet ID.
+        const spreadsheetId = extractSpreadsheetId(spreadsheetUrl);
+
+
         // Step 1: Authenticate
         console.log('Authenticating with Google Sheets...');
         const authResult = await authenticate(credentialsPath);
@@ -23,6 +27,8 @@ async function processSheetForAI(spreadsheetId, options = {}) {
         if (!authResult.success) {
             throw new Error(`Authentication failed: ${authResult.error}`);
         }
+
+
 
         const { sheets } = authResult;
 
@@ -131,7 +137,7 @@ async function processSheetForAI(spreadsheetId, options = {}) {
 
         // Finally return the needed context for AI to analyze.
         return result;
-    } 
+    }
     catch (error) {
         console.error('Error in processSheetForAI:', error);
 
