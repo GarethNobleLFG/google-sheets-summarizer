@@ -1,9 +1,7 @@
-const {
-    authenticate,
-    getSheetData,
-    convertToCSVString,
-    analyzeDataTypes,
-    generateAIContext } = require('../utils/googleSheetsUtils');
+const { authenticate, getSheetData } = require('../utils/googleSheetsApi');
+const { convertToCSVString } = require('../utils/dataFormatter');
+const { analyzeDataTypes } = require('../utils/dataAnalyzer');
+const { generateAIContext } = require('../utils/aiHelper');
 
 
 
