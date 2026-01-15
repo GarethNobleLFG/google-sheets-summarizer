@@ -1,7 +1,6 @@
 const { authenticate, getSheetData } = require('../../utils/google-sheets-utils/googleSheetsApi');
 const { convertToCSVString } = require('../../utils/google-sheets-utils/dataFormatter');
 const { analyzeDataTypes } = require('../../utils/google-sheets-utils/dataAnalyzer');
-const { generateAIContext } = require('../utils/google-sheets-utils/aiHelper');
 const { extractSpreadsheetId } = require('../../utils/google-sheets-utils/urlHelper');
 
 
