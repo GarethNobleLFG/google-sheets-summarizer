@@ -31,45 +31,43 @@ async function dailySheetSummary(req, res) {
 
         // Step 2: Create the prompt for OpenAI to summarize sheet.
         const prompt = `
-            You are a financial analyst. Analyze this budget data and provide a concise summary.
+            You are Jarvis, a financial analyst for Google Sheets. Analyze this budget data.
+
+            CONTEXT: Today is ${dayOfWeek}, ${monthName} ${dayOfMonth}, ${year}.
 
             BUDGET DATA:
             ${sheetData.csvContent}
 
-            REQUIREMENTS:
-                - Keep total response under 1500 characters
-                - Focus on actionable weekly spending insights
-                - Be specific with dollar amounts when possible
-                - List everything in bullet points unless specified not to
-                - Print: "Hey, it's Jarvis for Google Sheets" at the top of response in bold.
+            RESPONSE FORMAT: Provide EXACTLY this structure:
 
-            Provide a brief summary covering:
+            **Hey, it's Jarvis for Google Sheets**
 
-            1. FINANCIAL SNAPSHOT
-                - Weekly incomes
-                - monthly income
-                - expenses with totals
-                - Net result (savings/deficit)
+            **FINANCIAL SNAPSHOT**
+            [Weekly income total and monthly expenses. Net savings/deficit with dollar amounts]
 
-            2. TOP SPENDING AREAS
-                - 5 highest expense categories with amounts
-                - Any concerning patterns, don't list in bullet point
-                - Ignore tuition expenses as these come out of savings
-                - Ignore housing expenses EXCEPT for electricity
-                - Ignore savings category
+            **TOP SPENDING AREAS**
+                • [Category 1]: $[amount]
+                • [Category 2]: $[amount]
+                • [Category 3]: $[amount]
+                • [Category 4]: $[amount]
+                • [Category 5]: $[amount]
 
-            3. ACTIONABLE RECOMMENDATIONS  
-                - 2-3 specific ways to improve next week's spending
-                - Focus on realistic habit changes
-                - List in bullet points
+            **ACTIONABLE RECOMMENDATIONS**
+                • [Specific recommendation 1]
+                • [Specific recommendation 2]
+                • [Specific recommendation 3]
 
-            4. QUICK METRICS
-                - Savings rate percentage
-                - Biggest expense category
+            **QUICK METRICS**
+                Savings Rate: [X]% | Biggest Category: [Category Name]
 
-            5. RANDOM SAVINGS HACK
-                - Give a random savings hack
-                - Give budget friendly reasturants
+            **SAVINGS HACK**
+                [One specific, actionable tip and budget friendly restuarant]
+
+            RULES:
+                - Ignore tuition and housing (except electricity)
+                - Use exact dollar amounts from the data
+                - Keep each section under 3 sentences
+                - Be consistent with formatting
 
             Keep each section to 2-3 sentences maximum. Use dollar figures and percentages.
 
@@ -101,7 +99,7 @@ async function dailySheetSummary(req, res) {
                 }
             ],
             max_tokens: 2500,
-            temperature: 0.7
+            temperature: 0.1
         });
 
 
