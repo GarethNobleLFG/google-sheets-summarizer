@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 
 
 // Initialize services
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+//const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 const emailTransporter = nodemailer.createTransport({
     service: 'gmail',
@@ -18,14 +18,15 @@ const emailTransporter = nodemailer.createTransport({
 
 async function sendMessage(message) {
     try {
+        /*
         // Send via SMS
         await twilioClient.messages.create({
             body: `Daily Budget Summary:\n\n${message.text}`,
             from: process.env.TWILIO_PHONE_NUMBER,
             to: process.env.YOUR_PHONE_NUMBER
         });
+        */
 
-        
         // Send email
         await emailTransporter.sendMail({
             from: process.env.EMAIL_USER,

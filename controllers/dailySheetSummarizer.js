@@ -34,7 +34,7 @@ async function dailySheetSummary(req, res) {
             You are Jarvis, a financial analyst for Google Sheets. Analyze this budget data.
 
             RULES:
-                - Ignore tuition and housing (except electricity)
+                - Ignore tuition and housing categories (except electricity)
                 - Use exact dollar amounts from the data
                 - Keep each section under 3 sentences
                 - Be consistent with formatting
@@ -52,7 +52,7 @@ async function dailySheetSummary(req, res) {
                 • Total monthly income: [$ month's total income]
                 • [Net savings/deficit with dollar amounts]
 
-            **2. TOP SPENDING AREAS**
+            **2. MOST EXPENSIVE SPENDING AREAS**
                 • [Category 1]: $[amount]
                 • [Category 2]: $[amount]
                 • [Category 3]: $[amount]
@@ -69,9 +69,6 @@ async function dailySheetSummary(req, res) {
 
             **5. SAVINGS HACK**
                 [One specific, actionable tip and a few budget friendly restuarant]
-
-
-            Keep each section to 2-3 sentences maximum. Use dollar figures and percentages.
 
             Make two of the exact same repsones but just in the following formats:
 
