@@ -40,13 +40,12 @@ async function dailySheetSummary(req, res) {
                 - Keep total response under 1500 characters
                 - Focus on actionable weekly spending insights
                 - Be specific with dollar amounts when possible
-                - List everythin in bullet points unless specified not to
-                - Say, "Hey, it's Jarvis for Google Sheets" at the top of response in bold.
+                - List everything in bullet points unless specified not to
 
             Provide a brief summary covering:
 
             1. FINANCIAL SNAPSHOT
-                - Weekly incomeS
+                - Weekly incomes
                 - monthly income
                 - expenses with totals
                 - Net result (savings/deficit)
@@ -72,6 +71,7 @@ async function dailySheetSummary(req, res) {
                 - Give budget friendly reasturants
 
             Keep each section to 2-3 sentences maximum. Use dollar figures and percentages.
+            Say, "Hey, it's Jarvis for Google Sheets" at the top of summary response in bold.
 
             Make two of the exact same repsones but just in the following formats:
 
