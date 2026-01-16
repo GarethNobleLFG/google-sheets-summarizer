@@ -41,7 +41,7 @@ async function dailySheetSummary(req, res) {
             **Hey, it's Jarvis for Google Sheets**
 
             **1. FINANCIAL SNAPSHOT**
-                • This week's income: [$ week's total income]
+                • Weekly income: [$ week 1 total income], [$ week 2 total income], [$ week 3 total income], [$ week 4 total income], [$ week 5 total income]
                 • Total monthly income: [$ month's total income]
                 • [Net savings/deficit with dollar amounts]
 
