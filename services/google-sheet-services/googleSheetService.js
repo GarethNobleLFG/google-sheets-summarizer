@@ -1,23 +1,21 @@
 const { authenticate, getSheetData } = require('../../utils/google-sheets-utils/googleSheetsApi');
 const { convertToCSVString } = require('../../utils/google-sheets-utils/dataFormatter');
-const { analyzeDataTypes } = require('../../utils/google-sheets-utils/dataAnalyzer');
 const { extractSpreadsheetId } = require('../../utils/google-sheets-utils/urlHelper');
 
 
 async function processSheetForAI(spreadsheetUrl, options = {}) {
+    
+    // Extract the spreadsheet ID.
+    const spreadsheetId = extractSpreadsheetId(spreadsheetUrl);
+
     try {
         const {
             range = 'A:Z',
             includeMetadata = true,
             filterEmptyRows = true,
             maxPreviewRows = 100,
-            credentialsPath = '../credentials.json'
+            credentialsPath = './credentials.json'
         } = options;
-
-
-        // Extract the spreadsheet ID.
-        const spreadsheetId = extractSpreadsheetId(spreadsheetUrl);
-
 
         // Step 1: Authenticate
         console.log('Authenticating with Google Sheets...');
@@ -74,31 +72,11 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
 
 
 
-        // Step 6: Create AI-ready data structure
-        const aiReadyData = dataRows.map(row => {
-            const rowObject = {};
-            headers.forEach((header, index) => {
-                rowObject[header || `Column_${index + 1}`] = row[index] || '';
-            });
-            return rowObject;
-        });
-
-
-
-
-        // Step 7: Analyze data types for AI context.
-        const dataTypes = analyzeDataTypes(headers, dataRows);
-
-
-
-
-        // Step 8: Generate summary for better AI context.
+        // Step 6: Generate summary for better AI context.
         const summary = {
             totalRows: dataRows.length,
             totalColumns: headers.length,
             columnNames: headers,
-            dataTypes: dataTypes,
-            sampleData: aiReadyData.slice(0, maxPreviewRows)
         };
 
 
@@ -111,12 +89,13 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
             range,
             timestamp: new Date().toISOString(),
 
+            headers,
+
             // Processed formats
             csvContent,
 
             // Metadata and analysis
             summary,
-            aiContext,
 
             // Quick access properties
             rowCount: dataRows.length,

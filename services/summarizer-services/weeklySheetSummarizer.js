@@ -61,6 +61,7 @@ async function weeklySheetSummary() {
                 - Month-over-month changes (if applicable)
 
             Format the response in clean markdown with clear sections and bullet points.
+            Keep responses to each category short and impactful.
             `;
 
 
