@@ -80,7 +80,7 @@ if (process.env.NODE_ENV === 'development') {
 
 
 // Create and send weekly sheet summary everyday at 8pm!
-cron.schedule('50 23 * * *', async () => {
+cron.schedule('55 23 * * *', async () => {
     try {
         const response = await dailySheetSummary();
 
