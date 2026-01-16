@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const twilio = require('twilio');
 const app = express();
 const PORT = process.env.PORT;
 const { weeklySheetSummary } = require('./services/summarizer-services/weeklySheetSummarizer');
@@ -50,15 +51,25 @@ app.listen(PORT, () => {
 
 
 
-// Run the budget summary after server setup
+
+// Create and send weekly sheet summary!
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
 weeklySheetSummary()
-    .then(summary => {
-        console.log('\n' + '='.repeat(50));
-        console.log('MONTHLY BUDGET SUMMARY:');
-        console.log('='.repeat(50));
-        console.log(summary);
-        console.log('='.repeat(50) + '\n');
-    }).catch(error => console.error('Budget summary failed in index.js:', error.message));
+    .then(async (response) => {
+        console.log(response); 
+
+        // Send via SMS
+        await client.messages.create({
+            body: `Monthly Budget Summary:\n\n${response}`,
+            from: process.env.TWILIO_PHONE_NUMBER,
+            to: process.env.YOUR_PHONE_NUMBER
+        });
+
+        console.log('Budget summary sent via SMS!');
+    })
+    .catch(error => console.error('Failed:', error.message));
+
 
 
 

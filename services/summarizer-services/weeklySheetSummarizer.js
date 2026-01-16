@@ -28,40 +28,37 @@ async function weeklySheetSummary() {
 
         // Step 2: Create the prompt for OpenAI to summarize sheet.
         const prompt = `
-            You are a financial analyst. Please analyze this monthly budget data and create a comprehensive summary.
+            You are a financial analyst. Analyze this budget data and provide a concise summary.
 
             BUDGET DATA:
             ${sheetData.csvContent}
 
-            DATA CONTEXT:
-                - Total rows: ${sheetData.rowCount}
-                - Columns: ${sheetData.headers.join(', ')}
-                - Data types: ${JSON.stringify(sheetData.summary.dataTypes, null, 2)}
+            REQUIREMENTS:
+                - Keep total response under 1500 characters
+                - Use plain text (no markdown formatting) 
+                - Focus on actionable weekly spending insights
+                - Be specific with dollar amounts when possible
 
-            Please provide a monthly budget summary that includes:
+            Provide a brief summary covering:
 
-            1. **FINANCIAL OVERVIEW**
-                - Total income vs total expenses
-                - Net savings/deficit
-                - Budget variance analysis
+            1. FINANCIAL SNAPSHOT
+                - Weekly income vs expenses with totals
+                - Net result (savings/deficit)
 
-            2. **SPENDING BREAKDOWN**
-                - Top spending categories
-                - Percentage breakdown by category
-                - Any concerning spending patterns
+            2. TOP SPENDING AREAS
+                - 3 highest expense categories with amounts
+                - Any concerning patterns
+                - Ignore tuition expenses as these come out of savings
 
-            3. **INSIGHTS & RECOMMENDATIONS**
-                - Areas where you're over/under budget
-                - Opportunities to save money
-                - Suggestions for next month
+            3. ACTIONABLE RECOMMENDATIONS  
+                - 2-3 specific ways to improve next week's spending
+                - Focus on realistic habit changes
 
-            4. **KEY METRICS**
-                - Savings rate
-                - Expense ratios
-                - Month-over-month changes (if applicable)
+            4. QUICK METRICS
+                - Savings rate percentage
+                - Biggest expense category
 
-            Format the response in clean markdown with clear sections and bullet points.
-            Keep responses to each category short and impactful.
+            Keep each section to 2-3 sentences maximum. Use dollar figures and percentages.
             `;
 
 
