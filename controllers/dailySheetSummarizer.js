@@ -1,29 +1,17 @@
 require('dotenv').config();
-const { processSheetForAI } = require('../services/googleSheetService');
 const OpenAI = require('openai');
-const twilio = require('twilio');
-const nodemailer = require('nodemailer');
+
+const { sendMessage } = require('../utils/messagingService');
+const { processSheetForAI } = require('../services/googleSheetService');
+
 
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 });
-
-
-// Initialize services
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
-const emailTransporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
-
-
 const spreadsheetUrl = process.env.GOOGLE_SHEET_URL;
 const sheetName = process.env.SHEET_NAME;
+
 
 
 
@@ -65,7 +53,7 @@ async function dailySheetSummary(req, res) {
             Provide a brief summary covering:
 
             1. FINANCIAL SNAPSHOT
-                - Latest weekly income that and monthly income vs expenses with totals
+                - Latest weekly income based on what day it is and monthly income vs expenses with totals
                 - Net result (savings/deficit)
 
             2. TOP SPENDING AREAS
@@ -142,28 +130,8 @@ async function dailySheetSummary(req, res) {
 
 
 
-        // Step 6: Message with responses.
-        try {
-            // Send via SMS
-            await twilioClient.messages.create({
-                body: `Daily Budget Summary:\n\n${response.text}`,
-                from: process.env.TWILIO_PHONE_NUMBER,
-                to: process.env.YOUR_PHONE_NUMBER
-            })
-
-
-            // Send email
-            await emailTransporter.sendMail({
-                from: process.env.EMAIL_USER,
-                to: process.env.YOUR_EMAIL,
-                subject: `Daily Budget Summary - ${new Date().toLocaleDateString()}`,
-                text: response.text,
-                html: response.html
-            })
-        }
-        catch (error) {
-            console.error('Error sending messages:', error.message);
-        }
+        // Step 6: Send messages of response.
+        await sendMessage(response);
 
 
 
