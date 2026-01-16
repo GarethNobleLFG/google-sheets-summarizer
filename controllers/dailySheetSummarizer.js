@@ -40,26 +40,26 @@ async function dailySheetSummary(req, res) {
 
             **Hey, it's Jarvis for Google Sheets**
 
-            **FINANCIAL SNAPSHOT**
-            [Weekly income total and monthly expenses. Net savings/deficit with dollar amounts]
+            **1. FINANCIAL SNAPSHOT**
+            [Weekly income and monthly income vs total expenses. Net savings/deficit with dollar amounts]
 
-            **TOP SPENDING AREAS**
+            **2. TOP SPENDING AREAS**
                 • [Category 1]: $[amount]
                 • [Category 2]: $[amount]
                 • [Category 3]: $[amount]
                 • [Category 4]: $[amount]
                 • [Category 5]: $[amount]
 
-            **ACTIONABLE RECOMMENDATIONS**
+            **3. ACTIONABLE RECOMMENDATIONS**
                 • [Specific recommendation 1]
                 • [Specific recommendation 2]
                 • [Specific recommendation 3]
 
-            **QUICK METRICS**
+            **4. QUICK METRICS**
                 Savings Rate: [X]% | Biggest Category: [Category Name]
 
-            **SAVINGS HACK**
-                [One specific, actionable tip and budget friendly restuarant]
+            **5. SAVINGS HACK**
+                [One specific, actionable tip and a few budget friendly restuarant]
 
             RULES:
                 - Ignore tuition and housing (except electricity)
