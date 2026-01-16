@@ -89,7 +89,7 @@ async function dailySheetSummary(req, res) {
 
         // Step 3: Make OpenAI API call.
         const callOpenAi = await openai.chat.completions.create({
-            model: "gpt-4o",
+            model: "o1-mini",
             messages: [
                 {
                     role: "system",
