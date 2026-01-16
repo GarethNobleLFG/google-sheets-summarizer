@@ -57,7 +57,7 @@ async function dailySheetSummary(req, res) {
             Provide a brief summary covering:
 
             1. FINANCIAL SNAPSHOT
-                - Weekly income and monthly income vs expenses with totals
+                - Most recent weekly income and monthly income vs expenses with totals
                 - Net result (savings/deficit)
 
             2. TOP SPENDING AREAS
@@ -75,7 +75,11 @@ async function dailySheetSummary(req, res) {
                 - Savings rate percentage
                 - Biggest expense category
 
+            5. RANDOM SAVINGS HACK
+                - Give a random savings hack
+
             Keep each section to 2-3 sentences maximum. Use dollar figures and percentages.
+            Say, "Hey, it's Jarvis for Google Sheets." at the top of response.
 
             Make two of the exact same repsones but just in the following formats:
 
