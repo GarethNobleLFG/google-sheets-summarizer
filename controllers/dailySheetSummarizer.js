@@ -65,7 +65,7 @@ async function dailySheetSummary(req, res) {
                 • [Specific recommendation 3 that is easy and not a hard switch]
 
             **4. QUICK METRICS**
-                Savings Rate: [X]% | Biggest Category: **[Category Name]**
+                Savings Rate: [X]% | Biggest Category: **[Category Name (thats not the excluded ones)]**
 
             **5. SAVINGS HACK**
                 [One specific, actionable tip and a few budget friendly restuarant]
