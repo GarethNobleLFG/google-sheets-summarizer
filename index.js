@@ -79,7 +79,7 @@ dailySheetSummary()
         })
 
 
-        // Send Email
+        // Send email
         emailTransporter.sendMail({
             from: process.env.EMAIL_USER,
             to: process.env.YOUR_EMAIL,
