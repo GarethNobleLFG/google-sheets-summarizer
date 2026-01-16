@@ -1,9 +1,24 @@
 require('dotenv').config();
 const { processSheetForAI } = require('../services/googleSheetService');
 const OpenAI = require('openai');
+const twilio = require('twilio');
+const nodemailer = require('nodemailer');
+
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
+});
+
+
+// Initialize services
+const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+const emailTransporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
 });
 
 
@@ -11,9 +26,9 @@ const spreadsheetUrl = process.env.GOOGLE_SHEET_URL;
 const sheetName = process.env.SHEET_NAME;
 
 
-async function dailySheetSummary() {
-    try {
 
+async function dailySheetSummary(req, res) {
+    try {
         // Step 1: Process and get result from google sheet using the URL.
         const sheetData = await processSheetForAI(spreadsheetUrl, {
             range: `${sheetName}!A:Z`, // Target the specific sheet.
@@ -105,22 +120,57 @@ async function dailySheetSummary() {
 
 
 
-        // Step 5: Return both.
-        return {
+        // Step 5: Collect both responses.
+        const response = {
             text: textVersion,
             html: htmlVersion,
             success: true
         };
+
+
+
+        // Step 6: Message with responses.
+        try {
+            // Send via SMS
+            await twilioClient.messages.create({
+                body: `Daily Budget Summary:\n\n${response.text}`,
+                from: process.env.TWILIO_PHONE_NUMBER,
+                to: process.env.YOUR_PHONE_NUMBER
+            })
+
+
+            // Send email
+            await emailTransporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: process.env.YOUR_EMAIL,
+                subject: `Daily Budget Summary - ${new Date().toLocaleDateString()}`,
+                text: response.text,
+                html: response.html
+            })
+        }
+        catch (error) {
+            console.error('Error sending messages:', error.message);
+        }
+
+
+
+
+        // Finally: Send success response,
+        res.status(200).json({
+            success: true,
+            message: 'Daily summary sent successfully',
+            timestamp: new Date().toISOString()
+        });
     }
     catch (error) {
         console.error('Error generating monthly budget summary:', error);
 
-        return {
-            text: `Error generating summary: ${error.message}`,
-            html: `<p style="color: red;">Error generating summary: ${error.message}</p>`,
+        res.status(500).json({
             success: false,
-            error: error.message
-        };
+            message: 'Failed to generate daily summary',
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
     }
 }
 

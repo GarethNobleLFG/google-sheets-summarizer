@@ -1,23 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const twilio = require('twilio');
-const nodemailer = require('nodemailer');
-const cron = require('node-cron');
 const app = express();
-const { dailySheetSummary } = require('./controller/dailySheetSummarizer');
 
-
-
-// Initialize services
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
-const emailTransporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
+// Import routes
+const dailySummaryRoutes = require('./routes/dailySheetSummary');
 
 
 
@@ -30,54 +16,14 @@ app.use(express.json());
 
 
 
-// Basic route
+// Route implementations.
 app.get('/', (req, res) => {
     res.json({
         message: 'Welcome to Google Sheets Summarizer API',
         status: 'Server is running successfully!'
     });
 });
-
-
-
-
-
-
-// Daily summary route for API calls.
-app.get('/daily-summary', async (req, res) => {
-    try {
-        const response = await dailySheetSummary();
-
-        console.log(response.text);
-        console.log('\n\n\n\n\n');
-        console.log(response.html);
-
-        try {
-            // Send via SMS
-            await twilioClient.messages.create({
-                body: `Daily Budget Summary:\n\n${response.text}`,
-                from: process.env.TWILIO_PHONE_NUMBER,
-                to: process.env.YOUR_PHONE_NUMBER
-            })
-
-
-            // Send email
-            await emailTransporter.sendMail({
-                from: process.env.EMAIL_USER,
-                to: process.env.YOUR_EMAIL,
-                subject: `Daily Budget Summary - ${new Date().toLocaleDateString()}`,
-                text: response.text,
-                html: response.html
-            })
-        }
-        catch (error) {
-            console.error('Error sending messages:', error.message);
-        }
-    }
-    catch (error) {
-        console.error('Failed to generate summary:', error.message);
-    }
-});
+app.use('/daily-summary', dailySummaryRoutes);
 
 
 
