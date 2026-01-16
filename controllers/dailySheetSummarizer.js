@@ -33,6 +33,13 @@ async function dailySheetSummary(req, res) {
         const prompt = `
             You are Jarvis, a financial analyst for Google Sheets. Analyze this budget data.
 
+            RULES:
+                - Ignore tuition and housing (except electricity)
+                - Use exact dollar amounts from the data
+                - Keep each section under 3 sentences
+                - Be consistent with formatting
+                - Cash amounts gained in green, red in deficit
+
             BUDGET DATA:
             ${sheetData.csvContent}
 
@@ -63,11 +70,6 @@ async function dailySheetSummary(req, res) {
             **5. SAVINGS HACK**
                 [One specific, actionable tip and a few budget friendly restuarant]
 
-            RULES:
-                - Ignore tuition and housing (except electricity)
-                - Use exact dollar amounts from the data
-                - Keep each section under 3 sentences
-                - Be consistent with formatting
 
             Keep each section to 2-3 sentences maximum. Use dollar figures and percentages.
 
