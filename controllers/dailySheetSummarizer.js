@@ -41,7 +41,7 @@ async function dailySheetSummary(req, res) {
             **Hey, it's Jarvis for Google Sheets**
 
             **1. FINANCIAL SNAPSHOT**
-                • This week's income so far: [$ week's total income]
+                • This week's income: [$ week's total income]
                 • Total monthly income: [$ month's total income]
                 • [Net savings/deficit with dollar amounts]
 
@@ -58,7 +58,7 @@ async function dailySheetSummary(req, res) {
                 • [Specific recommendation 3]
 
             **4. QUICK METRICS**
-                Savings Rate: [X]% | Biggest Category: [Category Name]
+                Savings Rate: [X]% | Biggest Category: **[Category Name]**
 
             **5. SAVINGS HACK**
                 [One specific, actionable tip and a few budget friendly restuarant]
