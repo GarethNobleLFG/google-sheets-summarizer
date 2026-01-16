@@ -33,13 +33,14 @@ async function dailySheetSummary(req, res) {
         const dayOfMonth = today.getDate();
         const monthName = today.toLocaleDateString('en-US', { month: 'long' });
         const year = today.getFullYear();
+        const dayOfWeek = today.toLocaleDateString('en-US', { weekday: 'long' });
 
 
         // Step 2: Create the prompt for OpenAI to summarize sheet.
         const prompt = `
             You are a financial analyst. Analyze this budget data and provide a concise summary.
 
-            CONTEXT: Today is ${monthName} ${dayOfMonth}, ${year} (day ${dayOfMonth} of the month).
+            CONTEXT: Today is ${monthName} ${dayOfMonth}, ${year} (${dayOfWeek}).
 
             BUDGET DATA:
             ${sheetData.csvContent}
@@ -58,7 +59,7 @@ async function dailySheetSummary(req, res) {
 
             2. TOP SPENDING AREAS
                 - 5 highest expense categories with amounts, list in bullet points
-                - Any concerning patterns
+                - Any concerning patterns, don't list in bullet point
                 - Ignore tuition expenses as these come out of savings
                 - Ignore housing expenses EXCEPT for electricity
 
