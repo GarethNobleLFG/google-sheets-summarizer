@@ -41,6 +41,7 @@ async function dailySheetSummary(req, res) {
                 - Focus on actionable weekly spending insights
                 - Be specific with dollar amounts when possible
                 - List everything in bullet points unless specified not to
+                - Print: "Hey, it's Jarvis for Google Sheets" at the top of response in bold.
 
             Provide a brief summary covering:
 
@@ -71,7 +72,6 @@ async function dailySheetSummary(req, res) {
                 - Give budget friendly reasturants
 
             Keep each section to 2-3 sentences maximum. Use dollar figures and percentages.
-            Say, "Hey, it's Jarvis for Google Sheets" at the top of summary response in bold.
 
             Make two of the exact same repsones but just in the following formats:
 
