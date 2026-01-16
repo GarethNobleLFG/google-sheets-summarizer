@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/daily-summary",
-      "schedule": "07 00 * * *"
+      "schedule": "09 00 * * *"
     }
   ]
 }
