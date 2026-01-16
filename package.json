@@ -23,6 +23,7 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "googleapis": "^170.0.0",
+    "nodemailer": "^7.0.12",
     "nodemon": "^3.1.11",
     "openai": "^6.16.0",
     "twilio": "^5.11.2"

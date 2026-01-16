@@ -1,9 +1,23 @@
 require('dotenv').config();
 const express = require('express');
 const twilio = require('twilio');
+const nodemailer = require('nodemailer');
 const app = express();
 const PORT = process.env.PORT;
-const { weeklySheetSummary } = require('./services/summarizer-services/weeklySheetSummarizer');
+const { dailySheetSummary } = require('./services/summarizer-services/dailySheetSummarizer');
+
+
+
+// Initialize services
+const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+const emailTransporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
 
 
 
@@ -53,20 +67,26 @@ app.listen(PORT, () => {
 
 
 // Create and send weekly sheet summary!
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
-weeklySheetSummary()
+dailySheetSummary()
     .then(async (response) => {
-        console.log(response); 
+        console.log(response);
 
         // Send via SMS
-        await client.messages.create({
-            body: `Monthly Budget Summary:\n\n${response}`,
+        await twilioClient.messages.create({
+            body: `Daily Budget Summary:\n\n${response}`,
             from: process.env.TWILIO_PHONE_NUMBER,
             to: process.env.YOUR_PHONE_NUMBER
-        });
+        })
 
-        console.log('Budget summary sent via SMS!');
+
+        // Send Email
+        emailTransporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: process.env.YOUR_EMAIL,
+            subject: `Daily Budget Summary - ${new Date().toLocaleDateString()}`,
+            text: response,
+            html: `<pre>${response}</pre>` // Preserve formatting
+        })
     })
     .catch(error => console.error('Failed:', error.message));
 

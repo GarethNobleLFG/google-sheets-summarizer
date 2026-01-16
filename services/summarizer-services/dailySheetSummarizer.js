@@ -11,7 +11,7 @@ const spreadsheetUrl = process.env.GOOGLE_SHEET_URL;
 const sheetName = process.env.SHEET_NAME;
 
 
-async function weeklySheetSummary() {
+async function dailySheetSummary() {
     try {
 
         // Step 1: Process and get result from google sheet using the URL.
@@ -92,5 +92,5 @@ async function weeklySheetSummary() {
 
 
 module.exports = {
-    weeklySheetSummary
+    dailySheetSummary
 };
