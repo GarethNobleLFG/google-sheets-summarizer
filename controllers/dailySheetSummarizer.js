@@ -29,18 +29,9 @@ async function dailySheetSummary(req, res) {
         }
 
 
-        const today = new Date();
-        const dayOfMonth = today.getDate();
-        const monthName = today.toLocaleDateString('en-US', { month: 'long' });
-        const year = today.getFullYear();
-        const dayOfWeek = today.toLocaleDateString('en-US', { weekday: 'long' });
-
-
         // Step 2: Create the prompt for OpenAI to summarize sheet.
         const prompt = `
             You are a financial analyst. Analyze this budget data and provide a concise summary.
-
-            CONTEXT: Today is ${monthName} ${dayOfMonth}, ${year} (${dayOfWeek}).
 
             BUDGET DATA:
             ${sheetData.csvContent}
@@ -54,7 +45,7 @@ async function dailySheetSummary(req, res) {
             Provide a brief summary covering:
 
             1. FINANCIAL SNAPSHOT
-                - The latest weekly income total based on what day it is and monthly income vs expenses with totals
+                - Latest weekly income total and monthly income vs expenses with totals
                 - Net result (savings/deficit)
 
             2. TOP SPENDING AREAS
@@ -74,6 +65,7 @@ async function dailySheetSummary(req, res) {
 
             5. RANDOM SAVINGS HACK
                 - Give a random savings hack
+                - Give budget friendly reasturants
 
             Keep each section to 2-3 sentences maximum. Use dollar figures and percentages.
             Say, "Hey, it's Jarvis for Google Sheets" at the top of response in bold.
