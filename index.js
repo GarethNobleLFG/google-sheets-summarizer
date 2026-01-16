@@ -4,7 +4,6 @@ const twilio = require('twilio');
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
 const app = express();
-const PORT = process.env.PORT;
 const { dailySheetSummary } = require('./services/summarizer-services/dailySheetSummarizer');
 
 
@@ -22,8 +21,12 @@ const emailTransporter = nodemailer.createTransport({
 
 
 
+
+
 // Middleware to parse JSON bodies
 app.use(express.json());
+
+
 
 
 
@@ -38,6 +41,8 @@ app.get('/', (req, res) => {
 
 
 
+
+
 // 404 handler - FIXED: removed the problematic '*' parameter
 app.use((req, res) => {
     res.status(404).json({
@@ -45,6 +50,8 @@ app.use((req, res) => {
         message: `Cannot ${req.method} ${req.originalUrl}`
     });
 });
+
+
 
 
 
@@ -59,11 +66,14 @@ app.use((err, req, res, next) => {
 
 
 
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}!!`);
-});
 
+
+// Start the server
+if (process.env.NODE_ENV === 'development') {
+    app.listen(process.env.PORT, () => {
+        console.log(`Server is running on port ${process.env.PORT}!!`);
+    });
+}
 
 
 
