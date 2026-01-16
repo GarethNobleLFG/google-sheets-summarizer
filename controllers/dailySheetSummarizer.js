@@ -40,15 +40,16 @@ async function dailySheetSummary(req, res) {
                 - Keep total response under 1500 characters
                 - Focus on actionable weekly spending insights
                 - Be specific with dollar amounts when possible
+                - List everythin in bullet points unless specified not to
 
             Provide a brief summary covering:
 
             1. FINANCIAL SNAPSHOT
-                - Latest Week's income and monthly income vs expenses with totals
+                - Weekly incomes and monthly income vs expenses with totals
                 - Net result (savings/deficit)
 
             2. TOP SPENDING AREAS
-                - 5 highest expense categories with amounts, list in bullet points
+                - 5 highest expense categories with amounts
                 - Any concerning patterns, don't list in bullet point
                 - Ignore tuition expenses as these come out of savings
                 - Ignore housing expenses EXCEPT for electricity
@@ -64,12 +65,11 @@ async function dailySheetSummary(req, res) {
                 - Biggest expense category
 
             5. RANDOM SAVINGS HACK
-                - List in bullet points:
-                    - Give a random savings hack
-                    - Give budget friendly reasturants
+                - Give a random savings hack
+                - Give budget friendly reasturants
 
             Keep each section to 2-3 sentences maximum. Use dollar figures and percentages.
-            Say, "Hey, it's Jarvis for Google Sheets" at the top of response in bold.
+            *IMPORTANT* Say, "Hey, it's Jarvis for Google Sheets" at the top of response in bold.
 
             Make two of the exact same repsones but just in the following formats:
 
