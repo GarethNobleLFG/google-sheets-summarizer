@@ -54,7 +54,7 @@ async function dailySheetSummary(req, res) {
             Provide a brief summary covering:
 
             1. FINANCIAL SNAPSHOT
-                - Latest weekly income based on what day it is and monthly income vs expenses with totals
+                - The latest weekly income total based on what day it is and monthly income vs expenses with totals
                 - Net result (savings/deficit)
 
             2. TOP SPENDING AREAS
