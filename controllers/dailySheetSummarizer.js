@@ -60,9 +60,9 @@ async function dailySheetSummary(req, res) {
                 • [Category 5]: $[amount]
 
             **3. ACTIONABLE RECOMMENDATIONS**
-                • [Specific recommendation 1]
-                • [Specific recommendation 2]
-                • [Specific recommendation 3]
+                • [Specific recommendation 1 with goal savings amount]
+                • [Specific recommendation 2 with goal savings amount]
+                • [Specific recommendation 3 with goal savings amount]
 
             **4. QUICK METRICS**
                 Savings Rate: [X]% | Biggest Category: **[Category Name]**
