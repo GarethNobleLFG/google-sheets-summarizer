@@ -1,6 +1,6 @@
-const { authenticate, getSheetData } = require('../../utils/google-sheets-utils/googleSheetsApi');
-const { convertToCSVString } = require('../../utils/google-sheets-utils/dataFormatter');
-const { extractSpreadsheetId } = require('../../utils/google-sheets-utils/urlHelper');
+const { authenticate, getSheetData } = require('../../utils/googleSheetsApi');
+const { convertToCSVString } = require('../../utils/dataFormatter');
+const { extractSpreadsheetId } = require('../../utils/urlHelper');
 
 
 async function processSheetForAI(spreadsheetUrl, options = {}) {
