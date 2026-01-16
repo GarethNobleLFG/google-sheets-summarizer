@@ -69,6 +69,7 @@ async function dailySheetSummary(req, res) {
             3. ACTIONABLE RECOMMENDATIONS  
                 - 2-3 specific ways to improve next week's spending
                 - Focus on realistic habit changes
+                - List in bullet points
 
             4. QUICK METRICS
                 - Savings rate percentage
@@ -92,7 +93,7 @@ async function dailySheetSummary(req, res) {
 
         // Step 3: Make OpenAI API call.
         const callOpenAi = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: "gpt-4o",
             messages: [
                 {
                     role: "system",
