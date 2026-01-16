@@ -61,10 +61,10 @@ async function dailySheetSummary(req, res) {
                 - Net result (savings/deficit)
 
             2. TOP SPENDING AREAS
-                - 3 highest expense categories with amounts
+                - 5 highest expense categories with amounts
                 - Any concerning patterns
                 - Ignore tuition expenses as these come out of savings
-                - Ignore housing expenses
+                - Ignore housing expenses EXCEPT for electricity as these are constant
 
             3. ACTIONABLE RECOMMENDATIONS  
                 - 2-3 specific ways to improve next week's spending
