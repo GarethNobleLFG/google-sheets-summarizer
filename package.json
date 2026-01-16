@@ -1,6 +1,7 @@
 {
   "name": "google-sheets-summarizer",
   "version": "1.0.0",
+  "type": "commonjs",
   "description": "AI summarizer tool for shared google sheets on Google Drive.",
   "main": "index.js",
   "scripts": {

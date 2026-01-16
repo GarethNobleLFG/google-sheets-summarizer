@@ -3,10 +3,8 @@ const fs = require('fs');
 
 
 
-async function authenticate(credentialsPath = './credentials.json') {
+async function authenticate(credentials) {
     try {
-        const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
-
         const auth = new google.auth.GoogleAuth({
             credentials: credentials,
             scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
