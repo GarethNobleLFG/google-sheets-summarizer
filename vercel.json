@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/daily-summary",
-      "schedule": "09 05 * * *"
-    }
-  ]
-}
