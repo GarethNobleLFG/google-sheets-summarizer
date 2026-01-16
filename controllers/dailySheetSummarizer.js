@@ -57,10 +57,10 @@ async function dailySheetSummary(req, res) {
                 - Net result (savings/deficit)
 
             2. TOP SPENDING AREAS
-                - 5 highest expense categories with amounts
+                - 5 highest expense categories on sheet with amounts
                 - Any concerning patterns
                 - Ignore tuition expenses as these come out of savings
-                - Ignore housing expenses EXCEPT for electricity as these are constant
+                - Ignore housing expenses EXCEPT for electricity
 
             3. ACTIONABLE RECOMMENDATIONS  
                 - 2-3 specific ways to improve next week's spending
@@ -75,7 +75,7 @@ async function dailySheetSummary(req, res) {
                 - Give a random savings hack
 
             Keep each section to 2-3 sentences maximum. Use dollar figures and percentages.
-            Say, "Hey, it's Jarvis for Google Sheets." at the top of response.
+            Say, "Hey, it's Jarvis for Google Sheets" at the top of response in bold.
 
             Make two of the exact same repsones but just in the following formats:
 
