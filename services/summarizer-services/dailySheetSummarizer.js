@@ -59,6 +59,18 @@ async function dailySheetSummary() {
                 - Biggest expense category
 
             Keep each section to 2-3 sentences maximum. Use dollar figures and percentages.
+
+            Make two of the exact same repsones but just in the following formats:
+
+            TEXT_VERSION_START
+            [Plain text version - no formatting, just clean readable text]
+            TEXT_VERSION_END
+
+            HTML_VERSION_START
+            [Same content but formatted as clean HTML for email]
+            Use: <h3> for section headers, <strong> for emphasis, <ul><li> for lists, 
+            <p> for paragraphs, and inline styles for colors (green for positive, red for negative amounts)
+            HTML_VERSION_END
             `;
 
 
@@ -75,17 +87,39 @@ async function dailySheetSummary() {
                     content: prompt
                 }
             ],
-            max_tokens: 2000,
+            max_tokens: 2500,
             temperature: 0.7
         });
 
 
-        // Step 4: Return the response from OpenAI.
-        return callOpenAi.choices[0].message.content;
+
+        // Step 4: Parse the response to extract both message types.
+        const fullResponse = callOpenAi.choices[0].message.content;
+
+        const textMatch = fullResponse.match(/TEXT_VERSION_START([\s\S]*?)TEXT_VERSION_END/);
+        const htmlMatch = fullResponse.match(/HTML_VERSION_START([\s\S]*?)HTML_VERSION_END/);
+
+        const textVersion = textMatch ? textMatch[1].trim() : fullResponse;
+        const htmlVersion = htmlMatch ? htmlMatch[1].trim() : `<p>${fullResponse.replace(/\n/g, '</p><p>')}</p>`;
+
+
+
+        // Step 5: Return both.
+        return {
+            text: textVersion,
+            html: htmlVersion,
+            success: true
+        };
     }
     catch (error) {
         console.error('Error generating monthly budget summary:', error);
-        throw error;
+
+        return {
+            text: `Error generating summary: ${error.message}`,
+            html: `<p style="color: red;">Error generating summary: ${error.message}</p>`,
+            success: false,
+            error: error.message
+        };
     }
 }
 

@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const twilio = require('twilio');
 const nodemailer = require('nodemailer');
+const cron = require('node-cron');
 const app = express();
 const PORT = process.env.PORT;
 const { dailySheetSummary } = require('./services/summarizer-services/dailySheetSummarizer');
@@ -66,29 +67,47 @@ app.listen(PORT, () => {
 
 
 
-// Create and send weekly sheet summary!
-dailySheetSummary()
-    .then(async (response) => {
-        console.log(response);
-
-        // Send via SMS
-        await twilioClient.messages.create({
-            body: `Daily Budget Summary:\n\n${response}`,
-            from: process.env.TWILIO_PHONE_NUMBER,
-            to: process.env.YOUR_PHONE_NUMBER
-        })
 
 
-        // Send email
-        emailTransporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: process.env.YOUR_EMAIL,
-            subject: `Daily Budget Summary - ${new Date().toLocaleDateString()}`,
-            text: response,
-            html: `<pre>${response}</pre>` // Preserve formatting
-        })
-    })
-    .catch(error => console.error('Failed:', error.message));
+// Create and send weekly sheet summary everyday at 8pm!
+cron.schedule('0 20 * * *', async () => {
+    try {
+        const response = await dailySheetSummary();
+
+        console.log(response.text);
+        console.log('\n\n\n\n\n');
+        console.log(response.html);
+
+        try {
+            // Send via SMS
+            await twilioClient.messages.create({
+                body: `Daily Budget Summary:\n\n${response.text}`,
+                from: process.env.TWILIO_PHONE_NUMBER,
+                to: process.env.YOUR_PHONE_NUMBER
+            })
+
+
+            // Send email
+            await emailTransporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: process.env.YOUR_EMAIL,
+                subject: `Daily Budget Summary - ${new Date().toLocaleDateString()}`,
+                text: response.text,
+                html: response.html
+            })
+        }
+        catch (error) {
+            console.error('Error sending messages:', error.message);
+        }
+    }
+    catch (error) {
+        console.error('Failed to generate summary:', error.message);
+    }
+}, {
+    scheduled: true,
+    timezone: "America/New_York"
+});
+
 
 
 
