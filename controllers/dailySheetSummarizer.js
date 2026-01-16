@@ -38,14 +38,13 @@ async function dailySheetSummary(req, res) {
 
             REQUIREMENTS:
                 - Keep total response under 1500 characters
-                - Use plain text (no markdown formatting) 
                 - Focus on actionable weekly spending insights
                 - Be specific with dollar amounts when possible
 
             Provide a brief summary covering:
 
             1. FINANCIAL SNAPSHOT
-                - Latest weekly income total and monthly income vs expenses with totals
+                - Weekly income and monthly income vs expenses with totals
                 - Net result (savings/deficit)
 
             2. TOP SPENDING AREAS
@@ -53,6 +52,7 @@ async function dailySheetSummary(req, res) {
                 - Any concerning patterns, don't list in bullet point
                 - Ignore tuition expenses as these come out of savings
                 - Ignore housing expenses EXCEPT for electricity
+                - Ignore savings category
 
             3. ACTIONABLE RECOMMENDATIONS  
                 - 2-3 specific ways to improve next week's spending
