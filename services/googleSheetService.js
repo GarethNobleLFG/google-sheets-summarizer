@@ -1,8 +1,8 @@
 require('dotenv').config();
 
-const { authenticate, getSheetData } = require('../../utils/googleSheetsApi');
-const { convertToCSVString } = require('../../utils/dataFormatter');
-const { extractSpreadsheetId } = require('../../utils/urlHelper');
+const { authenticate, getSheetData } = require('../utils/googleSheetsApi');
+const { convertToCSVString } = require('../utils/dataFormatter');
+const { extractSpreadsheetId } = require('../utils/urlHelper');
 
 
 async function processSheetForAI(spreadsheetUrl, options = {}) {

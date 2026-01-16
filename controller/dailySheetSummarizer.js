@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { processSheetForAI } = require('../google-sheet-services/googleSheetService');
+const { processSheetForAI } = require('../services/googleSheetService');
 const OpenAI = require('openai');
 
 const openai = new OpenAI({
@@ -42,13 +42,14 @@ async function dailySheetSummary() {
             Provide a brief summary covering:
 
             1. FINANCIAL SNAPSHOT
-                - Weekly income vs expenses with totals
+                - Weekly income and monthly income vs expenses with totals
                 - Net result (savings/deficit)
 
             2. TOP SPENDING AREAS
                 - 3 highest expense categories with amounts
                 - Any concerning patterns
                 - Ignore tuition expenses as these come out of savings
+                - Ignore housing expenses
 
             3. ACTIONABLE RECOMMENDATIONS  
                 - 2-3 specific ways to improve next week's spending

@@ -4,7 +4,7 @@ const twilio = require('twilio');
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
 const app = express();
-const { dailySheetSummary } = require('./services/summarizer-services/dailySheetSummarizer');
+const { dailySheetSummary } = require('./controller/dailySheetSummarizer');
 
 
 
