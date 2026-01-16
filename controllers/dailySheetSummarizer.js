@@ -33,8 +33,6 @@ async function dailySheetSummary(req, res) {
         const prompt = `
             You are Jarvis, a financial analyst for Google Sheets. Analyze this budget data.
 
-            CONTEXT: Today is ${dayOfWeek}, ${monthName} ${dayOfMonth}, ${year}.
-
             BUDGET DATA:
             ${sheetData.csvContent}
 
