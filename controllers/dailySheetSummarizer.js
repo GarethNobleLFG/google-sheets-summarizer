@@ -1,8 +1,8 @@
 require('dotenv').config();
 const OpenAI = require('openai');
 
-const { sendMessage } = require('../utils/messagingService');
-const { processSheetForAI } = require('../services/googleSheetService');
+const { sendMessage } = require('../services/messagingService');
+const { processSheetForAI } = require('../services/google/googleSheetService');
 
 
 
