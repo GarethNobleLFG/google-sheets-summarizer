@@ -43,44 +43,8 @@ app.get('/', (req, res) => {
 
 
 
-// 404 handler - FIXED: removed the problematic '*' parameter
-app.use((req, res) => {
-    res.status(404).json({
-        error: 'Route not found',
-        message: `Cannot ${req.method} ${req.originalUrl}`
-    });
-});
-
-
-
-
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        error: 'Something went wrong!',
-        message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
-    });
-});
-
-
-
-
-
-// Start the server
-if (process.env.NODE_ENV === 'development') {
-    app.listen(process.env.PORT, () => {
-        console.log(`Server is running on port ${process.env.PORT}!!`);
-    });
-}
-
-
-
-
-
-// Create and send weekly sheet summary everyday at 8pm!
-cron.schedule('55 23 * * *', async () => {
+// Daily summary route for API calls.
+app.get('/daily-summary', async (req, res) => {
     try {
         const response = await dailySheetSummary();
 
@@ -113,10 +77,46 @@ cron.schedule('55 23 * * *', async () => {
     catch (error) {
         console.error('Failed to generate summary:', error.message);
     }
-}, {
-    scheduled: true,
-    timezone: "America/New_York"
 });
+
+
+
+
+
+
+
+// 404 handler - FIXED: removed the problematic '*' parameter
+app.use((req, res) => {
+    res.status(404).json({
+        error: 'Route not found',
+        message: `Cannot ${req.method} ${req.originalUrl}`
+    });
+});
+
+
+
+
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        error: 'Something went wrong!',
+        message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+    });
+});
+
+
+
+
+
+// Start the server
+if (process.env.NODE_ENV === 'development') {
+    app.listen(process.env.PORT, () => {
+        console.log(`Server is running on port ${process.env.PORT}!!`);
+    });
+}
+
 
 
 
