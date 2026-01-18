@@ -53,11 +53,7 @@ async function dailySheetSummary(req, res) {
                 • [Net savings/deficit with dollar amounts]
 
             **2. MOST EXPENSIVE SPENDING AREAS**
-                • [Category 1]: $[amount]
-                • [Category 2]: $[amount]
-                • [Category 3]: $[amount]
-                • [Category 4]: $[amount]
-                • [Category 5]: $[amount]
+                • [List categories and their cash amounts]
 
             **3. ACTIONABLE RECOMMENDATIONS**
                 • [Specific recommendation 1 that is easy and not a hard switch]
