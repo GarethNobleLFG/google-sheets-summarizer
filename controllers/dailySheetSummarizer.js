@@ -56,9 +56,7 @@ async function dailySheetSummary(req, res) {
                 • [List categories and their cash amounts]
 
             **3. ACTIONABLE RECOMMENDATIONS**
-                • [Specific recommendation 1 that is easy and not a hard switch]
-                • [Specific recommendation 2 that is easy and not a hard switch]
-                • [Specific recommendation 3 that is easy and not a hard switch]
+                • [Specific recommendations that are easy and not a hard to implement]
 
             **4. QUICK METRICS**
                 Savings Rate: [X]% | Biggest Category: **[Category Name (thats not the excluded ones)]**
