@@ -31,7 +31,12 @@ async function sendMessage(message) {
         await emailTransporter.sendMail({
             from: process.env.EMAIL_USER,
             to: process.env.YOUR_EMAIL,
-            subject: `Daily Budget Summary - ${new Date().toLocaleDateString()}`,
+            subject: `Daily Budget Summary - ${new Date().toLocaleDateString('en-US', {
+                timeZone: 'America/New_York',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            })}`,
             text: message.text,
             html: message.html
         });
