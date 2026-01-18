@@ -4,6 +4,7 @@ const app = express();
 
 // Import routes
 const dailySummaryRoutes = require('./routes/dailySheetSummary');
+const generalSummaryRoutes = require('./routes/generalSheetSummary');
 
 
 
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
     });
 });
 app.use('/daily-summary', dailySummaryRoutes);
+app.use('/general-summary', generalSummaryRoutes);
 
 
 
