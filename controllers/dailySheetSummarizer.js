@@ -112,6 +112,7 @@ async function dailySheetSummary(req, res) {
         const response = {
             text: textVersion,
             html: htmlVersion,
+            messageType: 'Daily Budget Summary',
             success: true
         };
 

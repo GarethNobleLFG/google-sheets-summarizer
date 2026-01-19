@@ -93,6 +93,7 @@ async function generalSheetSummary(req, res) {
         const response = {
             text: textVersion,
             html: htmlVersion,
+            messageType: 'General Budget Summary',
             success: true
         };
 
@@ -107,7 +108,7 @@ async function generalSheetSummary(req, res) {
         // Finally: Send success response,
         res.status(200).json({
             success: true,
-            message: 'Daily summary sent successfully',
+            message: 'General summary sent successfully.',
             timestamp: new Date().toISOString()
         });
     }
