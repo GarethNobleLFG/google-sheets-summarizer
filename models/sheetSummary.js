@@ -1,17 +1,105 @@
 const pool = require('../config/database');
 
+
+
 class SheetSummary {
     constructor(data) {
         this.id = data.id;
-        this.sheet_url = data.sheet_url;
-        this.sheet_name = data.sheet_name;
         this.summary_type = data.summary_type;
-        this.summary_content = data.summary_content;
         this.text_version = data.text_version;
-        this.raw_data = data.raw_data;
+        this.html_version = data.html_version;
         this.created_at = data.created_at;
-        this.updated_at = data.updated_at;
+    }
+
+
+
+    // Create a new summary
+    static async create(summaryData) {
+        const { summary_type, text_version, html_version } = summaryData;
+        
+        const query = `
+            INSERT INTO sheet_summaries (summary_type, text_version, html_version)
+            VALUES ($1, $2, $3)
+            RETURNING *
+        `;
+
+        try {
+            const result = await pool.query(query, [summary_type, text_version, html_version]);
+            return new SheetSummary(result.rows[0]);
+        } 
+        catch (error) {
+            throw new Error(`Failed to create summary: ${error.message}`);
+        }
+    }
+
+
+
+    // Find by ID
+    static async findById(id) {
+        const query = 'SELECT * FROM sheet_summaries WHERE id = $1';
+
+        try {
+            const result = await pool.query(query, [id]);
+            return result.rows[0] ? new SheetSummary(result.rows[0]) : null;
+        } catch (error) {
+            throw new Error(`Failed to find summary: ${error.message}`);
+        }
+    }
+
+
+
+    // Find all summaries
+    static async findAll(limit = 50) {
+        const query = `
+            SELECT * FROM sheet_summaries 
+            ORDER BY created_at DESC 
+            LIMIT $1
+        `;
+
+        try {
+            const result = await pool.query(query, [limit]);
+            return result.rows.map(row => new SheetSummary(row));
+        } 
+        catch (error) {
+            throw new Error(`Failed to fetch summaries: ${error.message}`);
+        }
+    }
+
+
+
+    // Find by type
+    static async findByType(summaryType, limit = 20) {
+        const query = `
+            SELECT * FROM sheet_summaries 
+            WHERE summary_type = $1 
+            ORDER BY created_at DESC 
+            LIMIT $2
+        `;
+
+        try {
+            const result = await pool.query(query, [summaryType, limit]);
+            return result.rows.map(row => new SheetSummary(row));
+        } 
+        catch (error) {
+            throw new Error(`Failed to fetch summaries by type: ${error.message}`);
+        }
+    }
+
+
+
+
+    // Delete a summary
+    static async deleteById(id) {
+        const query = 'DELETE FROM sheet_summaries WHERE id = $1 RETURNING *';
+
+        try {
+            const result = await pool.query(query, [id]);
+            return result.rows[0] ? new SheetSummary(result.rows[0]) : null;
+        } catch (error) {
+            throw new Error(`Failed to delete summary: ${error.message}`);
+        }
     }
 }
+
 
 module.exports = SheetSummary;

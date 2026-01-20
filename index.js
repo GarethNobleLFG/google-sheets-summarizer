@@ -1,36 +1,18 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const { Pool } = require('pg');
 
-// Import routes
+// Import database connection
+const pool = require('./config/database');
+
+// Import routes:
 const dailySummaryRoutes = require('./routes/dailySheetSummary');
 const generalSummaryRoutes = require('./routes/generalSheetSummary');
 
 
 
 
-// Database setup.
-const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT || 5432,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-    max: 20,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
-});
-
-
-pool.on('error', (err) => {
-    console.error('Unexpected error on idle client', err);
-    process.exit(-1);
-});
-
-
-// Test connection.
+// Database connection test.
 pool.connect()
     .then(client => {
         console.log('✅ Connected to PostgreSQL database successfully');
@@ -42,9 +24,7 @@ pool.connect()
     })
     .catch(error => {
         console.error('❌ Failed to connect to PostgreSQL database:', error.message);
-        process.exit(1);
     });
-
 
 
 
