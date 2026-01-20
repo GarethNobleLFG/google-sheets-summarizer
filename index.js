@@ -1,10 +1,51 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const { Pool } = require('pg');
 
 // Import routes
 const dailySummaryRoutes = require('./routes/dailySheetSummary');
 const generalSummaryRoutes = require('./routes/generalSheetSummary');
+
+
+
+
+// Database setup.
+const pool = new Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT || 5432,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+});
+
+
+pool.on('error', (err) => {
+    console.error('Unexpected error on idle client', err);
+    process.exit(-1);
+});
+
+
+// Test connection.
+pool.connect()
+    .then(client => {
+        console.log('✅ Connected to PostgreSQL database successfully');
+        return client.query('SELECT NOW() as current_time')
+            .then(result => {
+                console.log('📊 Database connection test completed:', result.rows[0].current_time);
+                client.release();
+            });
+    })
+    .catch(error => {
+        console.error('❌ Failed to connect to PostgreSQL database:', error.message);
+        process.exit(1);
+    });
+
+
 
 
 
@@ -21,7 +62,8 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.json({
         message: 'Welcome to Google Sheets Summarizer API',
-        status: 'Server is running successfully!'
+        status: 'Server is running successfully!',
+        database: 'Connected to PostgreSQL'
     });
 });
 app.use('/daily-summary', dailySummaryRoutes);
@@ -61,7 +103,7 @@ app.use((err, req, res, next) => {
 // Start the server
 if (process.env.NODE_ENV === 'development') {
     app.listen(process.env.PORT, () => {
-        console.log(`Server is running on port ${process.env.PORT}!!`);
+        console.log(`🚀 Server is running on port ${process.env.PORT}!`);
     });
 }
 
@@ -69,4 +111,9 @@ if (process.env.NODE_ENV === 'development') {
 
 
 
-module.exports = app;
+
+
+
+
+
+module.exports = { app, pool };
