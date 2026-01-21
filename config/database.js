@@ -18,7 +18,7 @@ if (process.env.DB_CONNECTION_TYPE === 'local') {
     });
 }
 else {
-    // Connect to external PostgreSQL databse.
+    // Connect to external PostgreSQL databse (configured for Railway).
     pool = new Pool({
         connectionString: process.env.DATABASE_PUBLIC_URL,
         ssl: {
