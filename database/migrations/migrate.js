@@ -43,7 +43,7 @@ class MigrationRunner {
         const version = filename.split('_')[0];
         const name = filename.replace('.sql', '').replace(/^\d+_/, '');
 
-        console.log(`🔄 Running migration: ${filename}`);
+        console.log(`Running migration: ${filename}`);
 
         try {
             // Begin transaction
@@ -82,7 +82,7 @@ class MigrationRunner {
             return;
         }
 
-        console.log(`📋 Found ${pendingMigrations.length} pending migrations`);
+        console.log(`Found ${pendingMigrations.length} pending migrations`);
 
         for (const migration of pendingMigrations) {
             await this.runMigration(migration);
@@ -103,7 +103,7 @@ if (require.main === module) {
     MigrationRunner.runAllPending()
         .then(() => process.exit(0))
         .catch(error => {
-            console.error('❌ Migration failed:', error);
+            console.error('Migration failed:', error);
             process.exit(1);
         });
 }

@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 
+/* For local development PostgreSQL server.
 const pool = new Pool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
@@ -11,6 +12,15 @@ const pool = new Pool({
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
+});
+*/
+
+// Connect to external PostgreSQL databse.
+const pool = new Pool({
+    connectionString: process.env.DATABASE_PUBLIC_URL,
+    ssl: {
+        rejectUnauthorized: false 
+    }
 });
 
 pool.on('error', (err) => {
