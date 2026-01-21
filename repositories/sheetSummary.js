@@ -1,16 +1,6 @@
 const pool = require('../config/database');
 
-
-
-class SheetSummary {
-    constructor(data) {
-        this.id = data.id;
-        this.summary_type = data.summary_type;
-        this.text_version = data.text_version;
-        this.html_version = data.html_version;
-        this.created_at = data.created_at;
-    }
-
+class sheetSummary {
 
 
     // Create a new summary
@@ -25,9 +15,8 @@ class SheetSummary {
 
         try {
             const result = await pool.query(query, [summary_type, text_version, html_version]);
-            return new SheetSummary(result.rows[0]);
-        } 
-        catch (error) {
+            return result.rows[0]; // Just return the raw data
+        } catch (error) {
             throw new Error(`Failed to create summary: ${error.message}`);
         }
     }
@@ -40,7 +29,7 @@ class SheetSummary {
 
         try {
             const result = await pool.query(query, [id]);
-            return result.rows[0] ? new SheetSummary(result.rows[0]) : null;
+            return result.rows[0] || null; // Just return raw data
         } catch (error) {
             throw new Error(`Failed to find summary: ${error.message}`);
         }
@@ -58,9 +47,8 @@ class SheetSummary {
 
         try {
             const result = await pool.query(query, [limit]);
-            return result.rows.map(row => new SheetSummary(row));
-        } 
-        catch (error) {
+            return result.rows; // Just return raw array
+        } catch (error) {
             throw new Error(`Failed to fetch summaries: ${error.message}`);
         }
     }
@@ -78,13 +66,11 @@ class SheetSummary {
 
         try {
             const result = await pool.query(query, [summaryType, limit]);
-            return result.rows.map(row => new SheetSummary(row));
-        } 
-        catch (error) {
+            return result.rows; // Just return raw array
+        } catch (error) {
             throw new Error(`Failed to fetch summaries by type: ${error.message}`);
         }
     }
-
 
 
 
@@ -94,12 +80,11 @@ class SheetSummary {
 
         try {
             const result = await pool.query(query, [id]);
-            return result.rows[0] ? new SheetSummary(result.rows[0]) : null;
+            return result.rows[0] || null; // Just return raw data
         } catch (error) {
             throw new Error(`Failed to delete summary: ${error.message}`);
         }
     }
 }
 
-
-module.exports = SheetSummary;
+module.exports = sheetSummary;
