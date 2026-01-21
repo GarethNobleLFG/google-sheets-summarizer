@@ -7,7 +7,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "migrate": "node migrations/migrate.js",
+    "migrate:status": "node -e \"require('./migrations/migrate.js').MigrationRunner.getAppliedMigrations().then(console.log)\"",
+    "db:create": "node database/scripts/createDatabase.js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +32,8 @@
     "nodemailer": "^7.0.12",
     "nodemon": "^3.1.11",
     "openai": "^6.16.0",
+    "pg": "^8.17.2",
+    "pg-pool": "^3.11.0",
     "twilio": "^5.11.2"
   }
 }

@@ -3,6 +3,7 @@ const OpenAI = require('openai');
 
 const { sendMessage } = require('../services/messagingService');
 const { processSheetForAI } = require('../services/google/googleSheetService');
+const sheetSummary = require('../database/repositories/sheetSummary');
 
 
 
@@ -99,7 +100,24 @@ async function generalSheetSummary(req, res) {
 
 
 
-        // Step 6: Send messages of response.
+        // Step 6: Save to database
+        try {
+            const summaryData = {
+                summary_type: 'General Budget Summary',
+                text_version: textVersion,
+                html_version: htmlVersion
+            };
+
+            const savedSummary = await sheetSummary.create(summaryData);
+            console.log('Summary saved to database with ID:', savedSummary.id);
+        }
+        catch (dbError) {
+            console.log('Failed to save to database in API call: ', dbError.message);
+        }
+
+
+
+        // Step 7: Send messages of response.
         await sendMessage(response);
 
 
