@@ -4,6 +4,7 @@ const app = express();
 
 // Import database connection
 const pool = require('./config/database');
+const { MigrationRunner } = require('./migrations/migrate');
 
 // Import routes:
 const dailySummaryRoutes = require('./routes/dailySheetSummary');
@@ -25,6 +26,19 @@ pool.connect()
     .catch(error => {
         console.error('❌ Failed to connect to PostgreSQL database:', error.message);
     });
+
+
+// Migration runner upon startup. Ensure consistency in database structure.
+(async () => {
+    try {
+        // Run pending migrations
+        await MigrationRunner.runAllPending();
+    } 
+    catch (error) {
+        console.error('❌ Failed to start application:', error.message);
+        process.exit(1);
+    }
+})();
 
 
 
