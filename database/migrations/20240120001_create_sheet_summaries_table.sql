@@ -4,7 +4,7 @@
 
 CREATE TABLE sheet_summaries (
     id SERIAL PRIMARY KEY,
-    summary_type VARCHAR(50) NOT NULL,
+    summary_type TEXT NOT NULL,
     text_version TEXT NOT NULL,
     html_version TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

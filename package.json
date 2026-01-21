@@ -9,7 +9,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "migrate": "node migrations/migrate.js",
-    "migrate:status": "node -e \"require('./migrations/migrate.js').MigrationRunner.getAppliedMigrations().then(console.log)\""
+    "migrate:status": "node -e \"require('./migrations/migrate.js').MigrationRunner.getAppliedMigrations().then(console.log)\"",
+    "db:create": "node database/scripts/createDatabase.js"
   },
   "repository": {
     "type": "git",
