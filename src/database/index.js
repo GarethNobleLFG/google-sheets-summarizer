@@ -1,6 +1,8 @@
-const pool = require('../config/database');
-const { createDatabase } = require('./scripts/createDatabase');
-const { MigrationRunner } = require('./migrations/migrate');
+const pool = require('../../config/database');              
+const { createDatabase } = require('../../database/scripts/createDatabase'); 
+const { MigrationRunner } = require('../../database/migrations/migrate');    
+
+
 
 class DatabaseManager {
     static async initialize() {
@@ -16,16 +18,16 @@ class DatabaseManager {
         let client;
         try {
             client = await pool.connect();
-            console.log('✅ Connected to PostgreSQL database successfully');
-            
+            console.log('Connected to PostgreSQL database successfully');
+
             const result = await client.query('SELECT NOW() as current_time');
-            console.log('📊 Database connection test completed:', result.rows[0].current_time);
-            
-        } 
+            console.log('Database connection test completed:', result.rows[0].current_time);
+
+        }
         catch (error) {
-            console.error('❌ Database connection test failed:', error.message);
+            console.error('Database connection test failed:', error.message);
             throw new Error(`Database connection failed: ${error.message}`);
-        } 
+        }
         finally {
             // Always release the client, even if there's an error
             if (client) {
@@ -38,13 +40,13 @@ class DatabaseManager {
         // Run migrations
         try {
             await MigrationRunner.runAllPending();
-        } 
+        }
         catch (error) {
-            console.error('❌ Migration failed:', error.message);
+            console.error('Migration failed:', error.message);
             throw new Error(`Migration failed: ${error.message}`);
         }
 
-        console.log('✅ Database initialization complete');
+        console.log('Database initialization complete');
     }
 
     static getPool() {

@@ -21,7 +21,7 @@ async function createDatabase() {
         );
 
         if (checkResult.rows.length > 0) {
-            console.log(`✅ Database "${process.env.DB_NAME}" already exists`);
+            console.log(`Database "${process.env.DB_NAME}" already exists`);
             return { exists: true };
         }
 
@@ -32,7 +32,7 @@ async function createDatabase() {
         }
 
         await client.query(`CREATE DATABASE ${dbName}`);
-        console.log(`✅ Database "${process.env.DB_NAME}" created successfully!`);
+        console.log(`Database "${process.env.DB_NAME}" created successfully!`);
         return { created: true };
 
     }

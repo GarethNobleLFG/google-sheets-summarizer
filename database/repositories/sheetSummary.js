@@ -16,7 +16,8 @@ class sheetSummary {
         try {
             const result = await pool.query(query, [summary_type, text_version, html_version]);
             return result.rows[0]; // Just return the raw data
-        } catch (error) {
+        } 
+        catch (error) {
             throw new Error(`Failed to create summary: ${error.message}`);
         }
     }
@@ -30,7 +31,8 @@ class sheetSummary {
         try {
             const result = await pool.query(query, [id]);
             return result.rows[0] || null; // Just return raw data
-        } catch (error) {
+        } 
+        catch (error) {
             throw new Error(`Failed to find summary: ${error.message}`);
         }
     }
@@ -48,7 +50,8 @@ class sheetSummary {
         try {
             const result = await pool.query(query, [limit]);
             return result.rows; // Just return raw array
-        } catch (error) {
+        } 
+        catch (error) {
             throw new Error(`Failed to fetch summaries: ${error.message}`);
         }
     }
@@ -67,7 +70,8 @@ class sheetSummary {
         try {
             const result = await pool.query(query, [summaryType, limit]);
             return result.rows; // Just return raw array
-        } catch (error) {
+        } 
+        catch (error) {
             throw new Error(`Failed to fetch summaries by type: ${error.message}`);
         }
     }
@@ -81,7 +85,8 @@ class sheetSummary {
         try {
             const result = await pool.query(query, [id]);
             return result.rows[0] || null; // Just return raw data
-        } catch (error) {
+        } 
+        catch (error) {
             throw new Error(`Failed to delete summary: ${error.message}`);
         }
     }

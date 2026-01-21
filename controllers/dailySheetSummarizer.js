@@ -129,7 +129,7 @@ async function dailySheetSummary(req, res) {
             };
 
             const savedSummary = await sheetSummary.create(summaryData);
-            console.log('✅ Summary saved to database with ID:', savedSummary.id);
+            console.log('Summary saved to database with ID:', savedSummary.id);
         }
         catch (dbError) {
             console.log('Failed to save to database in API call: ', dbError.message);

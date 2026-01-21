@@ -61,7 +61,7 @@ class MigrationRunner {
             // Commit transaction
             await pool.query('COMMIT');
             
-            console.log(`✅ Migration completed: ${filename}`);
+            console.log(`Migration completed: ${filename}`);
         } 
         catch (error) {
             // Rollback on error
@@ -72,13 +72,13 @@ class MigrationRunner {
 
 
     static async runAllPending() {
-        console.log('🔍 Checking for pending migrations...');
+        console.log('Checking for pending migrations...');
         
         await this.ensureMigrationsTable();
         const pendingMigrations = await this.getPendingMigrations();
 
         if (pendingMigrations.length === 0) {
-            console.log('✅ No pending migrations');
+            console.log('No pending migrations');
             return;
         }
 
@@ -88,7 +88,7 @@ class MigrationRunner {
             await this.runMigration(migration);
         }
 
-        console.log('🎉 All migrations completed successfully');
+        console.log('All migrations completed successfully!');
     }
 }
 

@@ -8,7 +8,24 @@ function createApp() {
     app.use(express.json());
 
 
-    
+
+    // Import and register routes after DB is ready
+    const dailySummaryRoutes = require('../routes/dailySheetSummary');
+    const generalSummaryRoutes = require('../routes/generalSheetSummary');
+
+    // Routes
+    app.get('/', (req, res) => {
+        res.json({
+            message: 'Welcome to Google Sheets Summarizer API',
+            status: 'Server is running successfully!',
+            database: 'Connected to PostgreSQL'
+        });
+    });
+    app.use('/daily-summary', dailySummaryRoutes);
+    app.use('/general-summary', generalSummaryRoutes);
+
+
+
     // 404 handler
     app.use((req, res) => {
         res.status(404).json({

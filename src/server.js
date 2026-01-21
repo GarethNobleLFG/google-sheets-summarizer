@@ -14,27 +14,9 @@ async function startServer() {
 
 
 
-        // Import and register routes after DB is ready
-        const dailySummaryRoutes = require('./routes/dailySheetSummary');
-        const generalSummaryRoutes = require('./routes/generalSheetSummary');
-
-        // Routes
-        app.get('/', (req, res) => {
-            res.json({
-                message: 'Welcome to Google Sheets Summarizer API',
-                status: 'Server is running successfully!',
-                database: 'Connected to PostgreSQL'
-            });
-        });
-        app.use('/daily-summary', dailySummaryRoutes);
-        app.use('/general-summary', generalSummaryRoutes);
-
-
-
-
         // Start server
         app.listen(process.env.PORT, () => {
-            console.log(`🚀 Server is running on port ${process.env.PORT}!`);
+            console.log(`Server is running on port ${process.env.PORT}!`);
         });
 
 
