@@ -46,8 +46,6 @@ async function dailySheetSummary(req, res) {
 
             RESPONSE FORMAT: Provide EXACTLY this structure:
 
-            **Hey, it's Jarvis for Google Sheets**
-
             **1. FINANCIAL SNAPSHOT**
                 • Weekly income: $[week 1 total income], $[week 2 total income], $[week 3 total income], $[week 4 total income], $[week 5 total income]
                 • Total monthly income: $[month's total income]
