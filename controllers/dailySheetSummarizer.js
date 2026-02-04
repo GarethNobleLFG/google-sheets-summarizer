@@ -57,10 +57,7 @@ async function dailySheetSummary(req, res) {
             **3. ACTIONABLE RECOMMENDATIONS**
                 • [Specific recommendations that are easy and not a hard to implement]
 
-            **4. QUICK METRICS**
-                Savings Rate: [X]% | Biggest Category: **[Category Name (thats not the excluded ones)]**
-
-            **5. SAVINGS HACK**
+            **4. SAVINGS HACK**
                 [One specific, actionable tip and a few budget friendly restuarant]
 
             Make two of the exact same repsones but just in the following formats:
