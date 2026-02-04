@@ -30,8 +30,53 @@ async function generalSheetSummary(req, res) {
         }
 
 
-        // Step 2: Create the prompt for OpenAI to summarize sheet.
-        const prompt = `
+        // Step 2: Create the analysis prompt for OpenAI to collect correct data from sheet.
+        const analysisPrompt = `
+            RULES:
+                - Ignore tuition and housing categories such as rent (except electricity)
+                - Use exact dollar amounts from the data
+                - Cash amounts gained in green, red in deficit
+
+            BUDGET DATA:
+            ${sheetData.csvContent}
+
+            RESPONSE:
+                * Weekly income: $[week 1 total income], $[week 2 total income], $[week 3 total income], $[week 4 total income], $[week 5 total income]
+                * Total monthly income: $[month's total income]
+                * Total monthly expenses: $[month's total expenses]
+                * List most expensive categories with respect to the given rules and their cash amounts.
+
+            Format your response like this and only this:
+            `;
+
+
+        // Step 3: Make OpenAI API call.
+        const callOpenAi = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+                {
+                    role: "system",
+                    content: "You are a data analyist."
+                },
+                {
+                    role: "user",
+                    content: analysisPrompt
+                }
+            ],
+            max_tokens: 2500,
+            temperature: 0.1
+        });
+
+
+
+        // Step 4: Parse the response to extract analysis message.
+        const gptResponse = callOpenAi.choices[0].message.content;
+
+        const analysisResponse = gptResponse ? gptResponse.trim() : '';
+
+
+        // Step 5: Create summary prompt.
+        const generalPrompt = `
             You are a financial analyst for Google Sheets. Analyze this budget data.
 
             RULES:
@@ -40,7 +85,7 @@ async function generalSheetSummary(req, res) {
                 - Cash amounts gained in green, red in deficit
 
             BUDGET DATA:
-            ${sheetData.csvContent}
+            ${analysisResponse}
 
             RESPONSE FORMAT: Provide EXACTLY this structure:
 
@@ -60,8 +105,8 @@ async function generalSheetSummary(req, res) {
             `;
 
 
-        // Step 3: Make OpenAI API call.
-        const callOpenAi = await openai.chat.completions.create({
+        // Step 6: Call OpenAI again and summarize the important data.
+        const callOpenAiAgain = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
                 {
@@ -70,7 +115,7 @@ async function generalSheetSummary(req, res) {
                 },
                 {
                     role: "user",
-                    content: prompt
+                    content: generalPrompt
                 }
             ],
             max_tokens: 2500,
@@ -79,8 +124,8 @@ async function generalSheetSummary(req, res) {
 
 
 
-        // Step 4: Parse the response to extract both message types.
-        const fullResponse = callOpenAi.choices[0].message.content;
+        // Step 7: Parse the response to extract both message types.
+        const fullResponse = callOpenAiAgain.choices[0].message.content;
 
         const textMatch = fullResponse.match(/TEXT_VERSION_START([\s\S]*?)TEXT_VERSION_END/);
         const htmlMatch = fullResponse.match(/HTML_VERSION_START([\s\S]*?)HTML_VERSION_END/);
@@ -90,7 +135,7 @@ async function generalSheetSummary(req, res) {
 
 
 
-        // Step 5: Collect both responses.
+        // Step 8: Collect both responses.
         const response = {
             text: textVersion,
             html: htmlVersion,
@@ -100,7 +145,7 @@ async function generalSheetSummary(req, res) {
 
 
 
-        // Step 6: Save to database
+        // Step 9: Save to database
         try {
             const summaryData = {
                 summary_type: 'General Budget Summary',
@@ -117,7 +162,8 @@ async function generalSheetSummary(req, res) {
 
 
 
-        // Step 7: Send messages of response.
+
+        // Step 10: Send messages of response.
         await sendMessage(response);
 
 
@@ -126,7 +172,7 @@ async function generalSheetSummary(req, res) {
         // Finally: Send success response,
         res.status(200).json({
             success: true,
-            message: 'General summary sent successfully.',
+            message: 'General summary sent successfully',
             timestamp: new Date().toISOString()
         });
     }
