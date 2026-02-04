@@ -52,7 +52,7 @@ async function dailySheetSummary(req, res) {
                 • [Net savings/deficit with dollar amounts]
 
             **2. MOST EXPENSIVE SPENDING AREAS**
-                • [List categories and their cash amounts]
+                • [List categories with respect to the given rules and their cash amounts]
 
             **3. ACTIONABLE RECOMMENDATIONS**
                 • [Specific recommendations that are easy and not a hard to implement]
@@ -104,7 +104,7 @@ async function dailySheetSummary(req, res) {
 
 
 
-        
+
         // Step 5: Collect both responses.
         const response = {
             text: textVersion,
