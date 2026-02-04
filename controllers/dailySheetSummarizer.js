@@ -35,7 +35,7 @@ async function dailySheetSummary(req, res) {
             You are Jarvis, a financial analyst for Google Sheets. Analyze this budget data.
 
             RULES:
-                - Ignore tuition and housing categories (except electricity)
+                - Ignore tuition and housing categories such as rent (except electricity)
                 - Use exact dollar amounts from the data
                 - Keep each section under 3 sentences
                 - Be consistent with formatting
@@ -107,6 +107,7 @@ async function dailySheetSummary(req, res) {
 
 
 
+        
         // Step 5: Collect both responses.
         const response = {
             text: textVersion,
