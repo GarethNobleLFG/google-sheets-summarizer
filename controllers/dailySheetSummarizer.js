@@ -33,9 +33,7 @@ async function dailySheetSummary(req, res) {
         // Step 2: Create the analysis prompt for OpenAI to collect correct data from sheet.
         const analysisPrompt = `
             RULES:
-                - Ignore tuition and housing categories such as rent (except electricity)
                 - Use exact dollar amounts from the data
-                - Cash amounts gained in green, red in deficit
 
             BUDGET DATA:
             ${sheetData.csvContent}
@@ -44,7 +42,7 @@ async function dailySheetSummary(req, res) {
                 * Weekly income: $[week 1 total income], $[week 2 total income], $[week 3 total income], $[week 4 total income], $[week 5 total income]
                 * Total monthly income: $[month's total income]
                 * Total monthly expenses: $[month's total expenses]
-                * List most expensive categories with respect to the given rules and their cash amounts.
+                * List most expensive categories and their cash amounts, ignore tuition and housing categories such as rent (except electricity).
 
             Format your response like this and only this:
             `;
