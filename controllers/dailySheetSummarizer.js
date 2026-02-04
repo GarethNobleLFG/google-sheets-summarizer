@@ -30,29 +30,65 @@ async function dailySheetSummary(req, res) {
         }
 
 
-        // Step 2: Create the prompt for OpenAI to summarize sheet.
-        const prompt = `
-            You are Jarvis, a financial analyst for Google Sheets. Analyze this budget data.
-
+        // Step 2: Create the analysis prompt for OpenAI to collect correct data from sheet.
+        const analysisPrompt = `
             RULES:
                 - Ignore tuition and housing categories such as rent (except electricity)
                 - Use exact dollar amounts from the data
-                - Keep each section under 3 sentences
-                - Be consistent with formatting
                 - Cash amounts gained in green, red in deficit
 
             BUDGET DATA:
             ${sheetData.csvContent}
+
+            RESPONSE:
+                * Weekly income: $[week 1 total income], $[week 2 total income], $[week 3 total income], $[week 4 total income], $[week 5 total income]
+                * Total monthly income: $[month's total income]
+                * Total monthly expenses: $[month's total expenses]
+                * List most expensive categories with respect to the given rules and their cash amounts.
+
+            Format your response like this and only this:
+            `;
+
+
+        // Step 3: Make OpenAI API call.
+        const callOpenAi = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+                {
+                    role: "system",
+                    content: "You are a data analyist."
+                },
+                {
+                    role: "user",
+                    content: analysisPrompt
+                }
+            ],
+            max_tokens: 2500,
+            temperature: 0.1
+        });
+
+
+
+        // Step 4: Parse the response to extract analysis message.
+        const gptResponse = callOpenAi.choices[0].message.content;
+
+        const analysisResponse = gptResponse ? gptResponse.trim() : '';
+
+
+        // Step 5: Create summary prompt.
+        const summaryPrompt = `
+            BUDGET DATA:
+            ${analysisResponse}
 
             RESPONSE FORMAT: Provide EXACTLY this structure:
 
             **1. FINANCIAL SNAPSHOT**
                 • Weekly income: $[week 1 total income], $[week 2 total income], $[week 3 total income], $[week 4 total income], $[week 5 total income]
                 • Total monthly income: $[month's total income]
-                • [Net savings/deficit with dollar amounts]
+                • [Total savings or loss (monthly income - expenses)]
 
             **2. MOST EXPENSIVE SPENDING AREAS**
-                • [List categories with respect to the given rules and their cash amounts]
+                • [List categories and their cash amounts]
 
             **3. ACTIONABLE RECOMMENDATIONS**
                 • [Specific recommendations that are easy and not a hard to implement]
@@ -60,7 +96,7 @@ async function dailySheetSummary(req, res) {
             **4. SAVINGS HACK**
                 [One specific, actionable tip and a few budget friendly restuarant]
 
-            Make two of the exact same repsones but just in the following formats:
+            Make two of the exact same responses but just in the following formats:
 
             TEXT_VERSION_START
             [Plain text version - no formatting, just clean readable text]
@@ -74,8 +110,8 @@ async function dailySheetSummary(req, res) {
             `;
 
 
-        // Step 3: Make OpenAI API call.
-        const callOpenAi = await openai.chat.completions.create({
+        // Step 6: Call OpenAI again and summarize the important data.
+        const callOpenAiAgain = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
                 {
@@ -84,7 +120,7 @@ async function dailySheetSummary(req, res) {
                 },
                 {
                     role: "user",
-                    content: prompt
+                    content: summaryPrompt
                 }
             ],
             max_tokens: 2500,
@@ -93,8 +129,8 @@ async function dailySheetSummary(req, res) {
 
 
 
-        // Step 4: Parse the response to extract both message types.
-        const fullResponse = callOpenAi.choices[0].message.content;
+        // Step 7: Parse the response to extract both message types.
+        const fullResponse = callOpenAiAgain.choices[0].message.content;
 
         const textMatch = fullResponse.match(/TEXT_VERSION_START([\s\S]*?)TEXT_VERSION_END/);
         const htmlMatch = fullResponse.match(/HTML_VERSION_START([\s\S]*?)HTML_VERSION_END/);
@@ -104,8 +140,7 @@ async function dailySheetSummary(req, res) {
 
 
 
-
-        // Step 5: Collect both responses.
+        // Step 8: Collect both responses.
         const response = {
             text: textVersion,
             html: htmlVersion,
@@ -115,8 +150,7 @@ async function dailySheetSummary(req, res) {
 
 
 
-
-        // Step 6: Save to database
+        // Step 9: Save to database
         try {
             const summaryData = {
                 summary_type: 'Daily Budget Summary',
@@ -134,7 +168,7 @@ async function dailySheetSummary(req, res) {
 
 
 
-        // Step 7: Send messages of response.
+        // Step 10: Send messages of response.
         await sendMessage(response);
 
 

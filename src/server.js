@@ -1,17 +1,11 @@
 require('dotenv').config();
-const { createApp } = require('./app');
+const app = require('./app');
 const { DatabaseManager } = require('./database');
 
 async function startServer() {
     try {
         // Initialize database
         await DatabaseManager.initialize();
-
-
-
-        // Create and configure app
-        const app = createApp();
-
 
 
         // Start server
