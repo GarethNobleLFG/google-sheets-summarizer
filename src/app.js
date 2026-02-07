@@ -1,18 +1,15 @@
+require('dotenv').config();
 const express = require('express');
+const { DatabaseManager } = require('./config/databaseSetup');
 
 const app = express();
-
 
 // Middleware
 app.use(express.json());
 
-
-
 // Import and register routes after DB is ready
-const dailySummaryRoutes = require('../daily-summary/dailySheetSummary');
-const generalSummaryRoutes = require('../routes/generalSheetSummary');
-
-
+const dailySummaryRoutes = require('./daily-summary/dailySheetSummary');
+const generalSummaryRoutes = require('./routes/generalSheetSummary');
 
 // Routes
 app.get('/', (req, res) => {
@@ -25,8 +22,6 @@ app.get('/', (req, res) => {
 app.use('/daily-summary', dailySummaryRoutes);
 app.use('/general-summary', generalSummaryRoutes);
 
-
-
 // 404 handler
 app.use((req, res) => {
     res.status(404).json({
@@ -34,8 +29,6 @@ app.use((req, res) => {
         message: `Cannot ${req.method} ${req.originalUrl}`
     });
 });
-
-
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -46,5 +39,22 @@ app.use((err, req, res, next) => {
     });
 });
 
+async function startServer() {
+    try {
+        // Initialize database
+        await DatabaseManager.initialize();
 
-module.exports = app;
+        // Start server
+        app.listen(process.env.PORT, () => {
+            console.log(`Server is running on port ${process.env.PORT}!`);
+        });
+
+        return app;
+    }
+    catch (error) {
+        console.error('❌ Failed to start server:', error.message);
+        process.exit(1);
+    }
+}
+
+module.exports = { startServer };
