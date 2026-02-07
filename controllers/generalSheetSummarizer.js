@@ -3,7 +3,7 @@ const OpenAI = require('openai');
 
 const { sendMessage } = require('../services/messagingService');
 const { processSheetForAI } = require('../services/google/googleSheetService');
-const sheetSummary = require('../database/repositories/sheetSummary');
+const sheetSummary = require('../modules/sheetSummary');
 
 
 

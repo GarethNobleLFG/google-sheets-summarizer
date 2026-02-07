@@ -9,7 +9,7 @@ app.use(express.json());
 
 
 // Import and register routes after DB is ready
-const dailySummaryRoutes = require('../routes/dailySheetSummary');
+const dailySummaryRoutes = require('../daily-summary/dailySheetSummary');
 const generalSummaryRoutes = require('../routes/generalSheetSummary');
 
 
