@@ -1,6 +1,6 @@
 const pool = require('../../config/database');              
 const { createDatabase } = require('../../database/scripts/createDatabase'); 
-const { MigrationRunner } = require('../../database/migrations/migrate');    
+const { MigrationRunner } = require('../../migrations/migrate');    
 
 
 
