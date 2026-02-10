@@ -1,20 +1,28 @@
 require('dotenv').config();
 const OpenAI = require('openai');
 const { sendMessage } = require('./messagingService');
+const { processSheetForAI } = require('./google/googleSheetService');
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 });
 
-async function generateDailySummary(csvContent) {
+async function generateDailySummary(spreadsheetUrl, sheetOptions) {
     try {
-        // Step 1: Create the analysis prompt for OpenAI to collect correct data from sheet
+        // Step 1: Process and get result from google sheet using the URL
+        const sheetData = await processSheetForAI(spreadsheetUrl, sheetOptions);
+
+        if (!sheetData.success) {
+            throw new Error(`Failed to process sheet: ${sheetData.error}`);
+        }
+
+        // Step 2: Create the analysis prompt for OpenAI to collect correct data from sheet
         const analysisPrompt = `
             RULES:
                 - Use exact dollar amounts from the data
 
             BUDGET DATA:
-            ${csvContent}
+            ${sheetData.csvContent}
 
             RESPONSE:
                 * Weekly income: $[week 1 total income], $[week 2 total income], $[week 3 total income], $[week 4 total income], $[week 5 total income]
@@ -25,7 +33,7 @@ async function generateDailySummary(csvContent) {
             Format your response like this and only this:
         `;
 
-        // Step 2: Make OpenAI API call for analysis
+        // Step 3: Make OpenAI API call for analysis
         const analysisResponse = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
@@ -44,7 +52,7 @@ async function generateDailySummary(csvContent) {
 
         const analysisData = analysisResponse.choices[0].message.content?.trim() || '';
 
-        // Step 3: Create summary prompt
+        // Step 4: Create summary prompt
         const summaryPrompt = `
             BUDGET DATA:
             ${analysisData}
@@ -78,7 +86,7 @@ async function generateDailySummary(csvContent) {
             HTML_VERSION_END
         `;
 
-        // Step 4: Call OpenAI again and summarize the important data
+        // Step 5: Call OpenAI again and summarize the important data
         const summaryResponse = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
@@ -95,7 +103,7 @@ async function generateDailySummary(csvContent) {
             temperature: 0.1
         });
 
-        // Step 5: Parse the response to extract both message types
+        // Step 6: Parse the response to extract both message types
         const fullResponse = summaryResponse.choices[0].message.content;
 
         const textMatch = fullResponse.match(/TEXT_VERSION_START([\s\S]*?)TEXT_VERSION_END/);
@@ -104,7 +112,7 @@ async function generateDailySummary(csvContent) {
         const textVersion = textMatch ? textMatch[1].trim() : fullResponse;
         const htmlVersion = htmlMatch ? htmlMatch[1].trim() : `<p>${fullResponse.replace(/\n/g, '</p><p>')}</p>`;
 
-        // Step 6: Send the message
+        // Step 7: Send the message
         const response = {
             text: textVersion,
             html: htmlVersion,
@@ -121,9 +129,8 @@ async function generateDailySummary(csvContent) {
             messageType: 'Daily Budget Summary'
         };
 
-    } 
-    catch (error) {
-        console.error('Error in OpenAI analysis:', error);
+    } catch (error) {
+        console.error('Error in daily summary generation:', error);
         return {
             success: false,
             error: error.message
