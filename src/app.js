@@ -7,7 +7,26 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-// Import and register routes after DB is ready
+// Initialize database on first request (lazy loading)
+let dbInitialized = false;
+
+app.use(async (req, res, next) => {
+    if (!dbInitialized) {
+        try {
+            await DatabaseManager.initialize();
+            dbInitialized = true;
+        } catch (error) {
+            console.error('❌ Database initialization failed:', error.message);
+            return res.status(500).json({
+                error: 'Database initialization failed',
+                message: error.message
+            });
+        }
+    }
+    next();
+});
+
+// Import routes
 const dailySummaryRoutes = require('./routes/dailySheetSummary');
 const generalSummaryRoutes = require('./routes/generalSheetSummary');
 
@@ -19,6 +38,7 @@ app.get('/', (req, res) => {
         database: 'Connected to PostgreSQL'
     });
 });
+
 app.use('/daily-summary', dailySummaryRoutes);
 app.use('/general-summary', generalSummaryRoutes);
 
@@ -39,22 +59,4 @@ app.use((err, req, res, next) => {
     });
 });
 
-async function startServer() {
-    try {
-        // Initialize database
-        await DatabaseManager.initialize();
-
-        // Start server
-        app.listen(process.env.PORT, () => {
-            console.log(`Server is running on port ${process.env.PORT}!`);
-        });
-
-        return app;
-    }
-    catch (error) {
-        console.error('❌ Failed to start server:', error.message);
-        process.exit(1);
-    }
-}
-
-module.exports = { startServer };
+module.exports = app;

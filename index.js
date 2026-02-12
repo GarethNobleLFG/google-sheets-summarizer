@@ -1,3 +1,9 @@
-const { startServer } = require('./src/app');
+const app = require('./src/app');
 
-startServer();
+if (process.env.NODE_ENV !== 'production') {    
+    app.listen(process.env.PORT, () => {
+        console.log(`Server is running on port ${process.env.PORT}!`);
+    });
+}
+
+module.exports = app;
