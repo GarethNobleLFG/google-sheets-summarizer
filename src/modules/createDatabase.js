@@ -1,22 +1,11 @@
 require('dotenv').config();
-const { Client } = require('pg');
+const pool = require('../config/database');
 
-// Essential for later DB connections becuase this is required to be made first.
+// Essential for later DB connections because this is required to be made first.
 async function createDatabase() {
-    // Connect to default postgres database first
-    const client = new Client({
-        user: process.env.DB_USER,
-        host: process.env.DB_HOST,
-        database: 'postgres', // Connect to default DB
-        password: process.env.DB_PASSWORD,
-        port: process.env.DB_PORT || 5432,
-    });
-
     try {
-        await client.connect();
-
         // Check if database already exists.
-        const checkResult = await client.query(
+        const checkResult = await pool.query(
             "SELECT 1 FROM pg_database WHERE datname = $1", [process.env.DB_NAME]
         );
 
@@ -31,17 +20,13 @@ async function createDatabase() {
             throw new Error(`Invalid database name: ${dbName}`);
         }
 
-        await client.query(`CREATE DATABASE ${dbName}`);
+        await pool.query(`CREATE DATABASE ${dbName}`);
         console.log(`Database "${process.env.DB_NAME}" created successfully!`);
         return { created: true };
-
     }
     catch (error) {
         console.error('❌ Error with database:', error.message);
         return { error: error.message };
-    }
-    finally {
-        await client.end();
     }
 }
 
