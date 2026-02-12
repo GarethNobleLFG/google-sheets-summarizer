@@ -15,7 +15,8 @@ app.use(async (req, res, next) => {
         try {
             await DatabaseManager.initialize();
             dbInitialized = true;
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('❌ Database initialization failed:', error.message);
             return res.status(500).json({
                 error: 'Database initialization failed',
