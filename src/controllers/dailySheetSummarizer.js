@@ -19,21 +19,6 @@ async function dailySheetSummary(req, res) {
             throw new Error(`Failed to generate analysis: ${analysisResult.error}`);
         }
 
-        // Step 2: Save to database
-        try {
-            const summaryData = {
-                summary_type: 'Daily Budget Summary',
-                text_version: analysisResult.text,
-                html_version: analysisResult.html
-            };
-
-            const savedSummary = await sheetSummary.create(summaryData);
-            console.log('Summary saved to database with ID:', savedSummary.id);
-        } 
-        catch (dbError) {
-            console.log('Failed to save to database in API call: ', dbError.message);
-        }
-
         // Finally: Send success response
         res.status(200).json({
             success: true,

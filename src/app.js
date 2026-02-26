@@ -7,7 +7,8 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-// Initialize database on first request (lazy loading)
+/*
+// Initialize database on first request
 let dbInitialized = false;
 
 app.use(async (req, res, next) => {
@@ -26,6 +27,7 @@ app.use(async (req, res, next) => {
     }
     next();
 });
+*/
 
 // Import routes
 const dailySummaryRoutes = require('./routes/dailySheetSummary');

@@ -107,7 +107,24 @@ async function generateGeneralSummary(spreadsheetUrl, sheetOptions) {
         const textVersion = textMatch ? textMatch[1].trim() : fullResponse;
         const htmlVersion = htmlMatch ? htmlMatch[1].trim() : `<p>${fullResponse.replace(/\n/g, '</p><p>')}</p>`;
 
-        // Step 7: Send the message
+        /*
+        // Step 7: Save to database
+        try {
+            const summaryData = {
+                summary_type: 'General Budget Summary',
+                text_version: analysisResult.text,
+                html_version: analysisResult.html
+            };
+
+            const savedSummary = await sheetSummary.create(summaryData);
+            console.log('Summary saved to database with ID:', savedSummary.id);
+        } 
+        catch (dbError) {
+            console.log('Failed to save to database in API call: ', dbError.message);
+        }
+        */
+
+        // Step 8: Send the message
         const response = {
             text: textVersion,
             html: htmlVersion,
