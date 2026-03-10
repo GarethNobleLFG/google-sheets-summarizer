@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import { DatabaseManager } from './config/databaseSetup.js';
+import { initializeDatabase } from './config/databaseSetup.js';
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ let dbInitialized = false;
 app.use(async (req, res, next) => {
     if (!dbInitialized) {
         try {
-            await DatabaseManager.initialize();
+            await initializeDatabase();
             dbInitialized = true;
         } 
         catch (error) {
