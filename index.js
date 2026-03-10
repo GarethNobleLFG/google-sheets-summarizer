@@ -1,4 +1,4 @@
-const app = require('./src/app');
+import app from './src/app.js';  
 
 if (process.env.NODE_ENV !== 'production') {    
     app.listen(process.env.PORT, () => {
@@ -6,4 +6,4 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
-module.exports = app;
+export default app; 

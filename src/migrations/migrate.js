@@ -1,6 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const pool = require('../config/database');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import pool from '../config/database.js';
+
+// ES6 equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class MigrationRunner {
 
@@ -15,14 +20,12 @@ class MigrationRunner {
         await pool.query(query);
     }
 
-
     static async getAppliedMigrations() {
         const result = await pool.query(
             'SELECT version FROM schema_migrations ORDER BY version'
         );
         return result.rows.map(row => row.version);
     }
-
 
     static async getPendingMigrations() {
         const appliedMigrations = await this.getAppliedMigrations();
@@ -35,7 +38,6 @@ class MigrationRunner {
             return !appliedMigrations.includes(version);
         });
     }
-
 
     static async runMigration(filename) {
         const filePath = path.join(__dirname, filename);
@@ -70,7 +72,6 @@ class MigrationRunner {
         }
     }
 
-
     static async runAllPending() {
         console.log('Checking for pending migrations...');
         
@@ -92,14 +93,10 @@ class MigrationRunner {
     }
 }
 
+export { MigrationRunner };
 
-
-module.exports = { MigrationRunner };
-
-
-
-// Run if called directly
-if (require.main === module) {
+// ES6 equivalent of "run if called directly"
+if (import.meta.url === `file://${process.argv[1]}`) {
     MigrationRunner.runAllPending()
         .then(() => process.exit(0))
         .catch(error => {

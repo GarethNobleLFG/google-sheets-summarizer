@@ -1,16 +1,17 @@
-const pool = require('./database');
-const { createDatabase } = require('../modules/createDatabase');
-const { MigrationRunner } = require('../migrations/migrate');
+import dotenv from 'dotenv';
+import pool from './database.js';
+import { createDatabase } from '../modules/createDatabase.js';
+import { MigrationRunner } from '../migrations/migrate.js';
+
+dotenv.config();
 
 class DatabaseManager {
     static async initialize() {
         // Only create database in local development
-
         const dbResult = await createDatabase();
         if (dbResult.error) {
             throw new Error(`Database setup failed: ${dbResult.error}`);
         }
-
 
         // Run migrations
         try {
@@ -29,4 +30,4 @@ class DatabaseManager {
     }
 }
 
-module.exports = { DatabaseManager };
+export { DatabaseManager };

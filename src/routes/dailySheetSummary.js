@@ -1,11 +1,8 @@
-const express = require('express');
-const { dailySheetSummary } = require('../controllers/dailySheetSummarizer');
-
+import express from 'express';
+import { dailySheetSummary } from '../controllers/dailySheetSummarizer.js';
 
 const router = express.Router();
 
-
 router.get('/', dailySheetSummary);
 
-
-module.exports = router;
+export default router;

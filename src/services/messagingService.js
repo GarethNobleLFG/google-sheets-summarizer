@@ -1,7 +1,8 @@
-require('dotenv').config();
-const twilio = require('twilio');
-const nodemailer = require('nodemailer');
+import dotenv from 'dotenv';
+import twilio from 'twilio';
+import nodemailer from 'nodemailer';
 
+dotenv.config();
 
 // Initialize services
 //const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
@@ -14,9 +15,7 @@ const emailTransporter = nodemailer.createTransport({
     }
 });
 
-
-
-async function sendMessage(message) {
+export async function sendMessage(message) {
     try {
         /*
         // Send via SMS
@@ -41,18 +40,10 @@ async function sendMessage(message) {
             html: message.html
         });
 
-
-        return { success: true }; 
-    } 
+        return { success: true };
+    }
     catch (error) {
         console.error('Error sending messages:', error.message);
         throw error;
     }
 }
-
-
-
-
-module.exports = {
-    sendMessage
-};

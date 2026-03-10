@@ -1,4 +1,4 @@
-function extractSpreadsheetId(url) {
+export function extractSpreadsheetId(url) {
   // Match the pattern for Google Sheets URLs
   const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
   
@@ -9,7 +9,3 @@ function extractSpreadsheetId(url) {
   // If no match, assume the input is already an ID
   return url;
 }
-
-module.exports = {
-  extractSpreadsheetId
-};

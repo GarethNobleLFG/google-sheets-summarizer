@@ -1,11 +1,11 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+import { authenticate, getSheetData } from './googleSheetsApi.js';
+import { convertToCSVString } from '../../utils/dataFormatter.js';
+import { extractSpreadsheetId } from '../../utils/urlHelper.js';
 
-const { authenticate, getSheetData } = require('./googleSheetsApi');
-const { convertToCSVString } = require('../../utils/dataFormatter');
-const { extractSpreadsheetId } = require('../../utils/urlHelper');
+dotenv.config();
 
-
-async function processSheetForAI(spreadsheetUrl, options = {}) {
+export async function processSheetForAI(spreadsheetUrl, options = {}) {
 
     // Extract the spreadsheet ID.
     const spreadsheetId = extractSpreadsheetId(spreadsheetUrl);
@@ -17,7 +17,6 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
             filterEmptyRows = true,
             maxPreviewRows = 100,
         } = options;
-
 
         const credentials = {
             type: process.env.GOOGLE_TYPE,
@@ -41,11 +40,7 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
             throw new Error(`Authentication failed: ${authResult.error}`);
         }
 
-
-
         const { sheets } = authResult;
-
-
 
         // Step 2: Get sheet data
         console.log('Fetching sheet data...');
@@ -61,10 +56,6 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
             throw new Error('No data found in the specified sheet range');
         }
 
-
-
-
-
         // Step 3: Process and clean data
         let processedData = rawData;
 
@@ -74,19 +65,12 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
             );
         }
 
-
-
         // Step 4: Extract headers and data rows
         const headers = processedData[0] || [];
         const dataRows = processedData.slice(1);
 
-
-
         // Step 5: Generate CSV content
         const csvContent = convertToCSVString(processedData);
-
-
-
 
         // Step 6: Generate summary for better AI context.
         const summary = {
@@ -94,9 +78,6 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
             totalColumns: headers.length,
             columnNames: headers,
         };
-
-
-
 
         // Complete result object
         const result = {
@@ -119,8 +100,6 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
             isEmpty: dataRows.length === 0
         };
 
-
-
         console.log(`Successfully processed sheet: ${dataRows.length} rows, ${headers.length} columns`);
 
         // Finally return the needed context for AI to analyze.
@@ -137,10 +116,3 @@ async function processSheetForAI(spreadsheetUrl, options = {}) {
         };
     }
 }
-
-
-
-
-module.exports = {
-    processSheetForAI
-};

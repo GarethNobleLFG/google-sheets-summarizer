@@ -1,9 +1,7 @@
-const { google } = require('googleapis');
-const fs = require('fs');
+import { google } from 'googleapis';
+import fs from 'fs';
 
-
-
-async function authenticate(credentials) {
+export async function authenticate(credentials) {
     try {
         const auth = new google.auth.GoogleAuth({
             credentials: credentials,
@@ -21,10 +19,7 @@ async function authenticate(credentials) {
     }
 }
 
-
-
-
-async function getSheetData(sheets, spreadsheetId, range = 'A:Z') {
+export async function getSheetData(sheets, spreadsheetId, range = 'A:Z') {
     try {
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId,
@@ -38,12 +33,3 @@ async function getSheetData(sheets, spreadsheetId, range = 'A:Z') {
         return { success: false, error: error.message };
     }
 }
-
-
-
-
-
-module.exports = {
-    authenticate,
-    getSheetData
-};

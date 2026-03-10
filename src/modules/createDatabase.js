@@ -1,8 +1,10 @@
-require('dotenv').config();
-const pool = require('../config/database');
+import dotenv from 'dotenv';
+import pool from '../config/database.js';
+
+dotenv.config();
 
 // Essential for later DB connections because this is required to be made first.
-async function createDatabase() {
+export async function createDatabase() {
     try {
         // Check if database already exists.
         const checkResult = await pool.query(
@@ -30,8 +32,7 @@ async function createDatabase() {
     }
 }
 
-module.exports = { createDatabase };
-
-if (require.main === module) {
+// ES6 equivalent of "run if called directly"
+if (import.meta.url === `file://${process.argv[1]}`) {
     createDatabase();
 }

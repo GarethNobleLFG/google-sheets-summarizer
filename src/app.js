@@ -1,14 +1,15 @@
-require('dotenv').config();
-const express = require('express');
-const { DatabaseManager } = require('./config/databaseSetup');
+import dotenv from 'dotenv';
+import express from 'express';
+import { DatabaseManager } from './config/databaseSetup.js';
+
+dotenv.config();
 
 const app = express();
 
 // Middleware
 app.use(express.json());
 
-/*
-// Initialize database on first request
+// Initialize database on first request.
 let dbInitialized = false;
 
 app.use(async (req, res, next) => {
@@ -21,17 +22,16 @@ app.use(async (req, res, next) => {
             console.error('❌ Database initialization failed:', error.message);
             return res.status(500).json({
                 error: 'Database initialization failed',
-                message: error.message
+                message: error.mesWsage
             });
         }
     }
     next();
 });
-*/
 
 // Import routes
-const dailySummaryRoutes = require('./routes/dailySheetSummary');
-const generalSummaryRoutes = require('./routes/generalSheetSummary');
+import dailySummaryRoutes from './routes/dailySheetSummary.js';
+import generalSummaryRoutes from './routes/generalSheetSummary.js';
 
 // Routes
 app.get('/', (req, res) => {
@@ -62,4 +62,4 @@ app.use((err, req, res, next) => {
     });
 });
 
-module.exports = app;
+export default app;

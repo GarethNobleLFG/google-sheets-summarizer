@@ -1,12 +1,13 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+import { generateDailySummary } from '../services/generateDailySummary.js';
+import * as sheetSummary from '../modules/sheetSummary.js';
 
-const { generateDailySummary } = require('../services/generateDailySummary');
-const sheetSummary = require('../modules/sheetSummary');
+dotenv.config();
 
 const spreadsheetUrl = process.env.GOOGLE_SHEET_URL;
 const sheetName = process.env.SHEET_NAME;
 
-async function dailySheetSummary(req, res) {
+export async function dailySheetSummary(req, res) {
     try {
         // Step 1: Generate analysis and send message using the service (includes sheet processing)
         const analysisResult = await generateDailySummary(spreadsheetUrl, {
@@ -38,7 +39,3 @@ async function dailySheetSummary(req, res) {
         });
     }
 }
-
-module.exports = {
-    dailySheetSummary
-};

@@ -1,13 +1,16 @@
-require('dotenv').config();
-const OpenAI = require('openai');
-const { sendMessage } = require('./messagingService');
-const { processSheetForAI } = require('./google/googleSheetService');
+import dotenv from 'dotenv';
+import OpenAI from 'openai';
+import { sendMessage } from './messagingService.js';
+import { processSheetForAI } from './google/googleSheetService.js';
+import { create } from '../modules/sheetSummary.js';
+
+dotenv.config();
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 });
 
-async function generateDailySummary(spreadsheetUrl, sheetOptions) {
+export async function generateDailySummary(spreadsheetUrl, sheetOptions) {
     try {
         // Step 1: Process and get result from google sheet using the URL
         const sheetData = await processSheetForAI(spreadsheetUrl, sheetOptions);
@@ -112,22 +115,20 @@ async function generateDailySummary(spreadsheetUrl, sheetOptions) {
         const textVersion = textMatch ? textMatch[1].trim() : fullResponse;
         const htmlVersion = htmlMatch ? htmlMatch[1].trim() : `<p>${fullResponse.replace(/\n/g, '</p><p>')}</p>`;
 
-        /*
         // Step 7: Save to database
         try {
             const summaryData = {
                 summary_type: 'Daily Budget Summary',
-                text_version: analysisResult.text,
-                html_version: analysisResult.html
+                text_version: textVersion,  
+                html_version: htmlVersion  
             };
 
-            const savedSummary = await sheetSummary.create(summaryData);
+            const savedSummary = await create(summaryData);
             console.log('Summary saved to database with ID:', savedSummary.id);
         }
         catch (dbError) {
             console.log('Failed to save to database in API call: ', dbError.message);
         }
-        */
 
         // Step 8: Send the message
         const response = {
@@ -155,7 +156,3 @@ async function generateDailySummary(spreadsheetUrl, sheetOptions) {
         };
     }
 }
-
-module.exports = {
-    generateDailySummary
-};

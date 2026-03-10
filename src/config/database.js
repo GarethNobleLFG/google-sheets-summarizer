@@ -1,5 +1,7 @@
-require('dotenv').config();
-const { Pool } = require('pg');
+import dotenv from 'dotenv';
+import { Pool } from 'pg';
+
+dotenv.config();
 
 let pool;
 
@@ -25,13 +27,12 @@ else {
             rejectUnauthorized: false
         }
     });
+    console.log("External connection: ", pool)
 }
-
 
 pool.on('error', (err) => {
     console.error('Unexpected error on idle client', err);
     process.exit(-1);
 });
 
-
-module.exports = pool;
+export default pool;
