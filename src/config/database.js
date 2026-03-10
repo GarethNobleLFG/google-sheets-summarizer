@@ -27,7 +27,6 @@ else {
             rejectUnauthorized: false
         }
     });
-    console.log("External connection: ", pool)
 }
 
 pool.on('error', (err) => {
