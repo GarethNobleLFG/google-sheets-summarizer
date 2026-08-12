@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import { initializeDatabase } from './config/databaseSetup.js';
+// import { initializeDatabase } from './config/databaseSetup.js';
 
 dotenv.config();
 
@@ -10,24 +10,24 @@ const app = express();
 app.use(express.json());
 
 // Initialize database on first request.
-let dbInitialized = false;
+// let dbInitialized = false;
 
-app.use(async (req, res, next) => {
-    if (!dbInitialized) {
-        try {
-            await initializeDatabase();
-            dbInitialized = true;
-        } 
-        catch (error) {
-            console.error('❌ Database initialization failed:', error.message);
-            return res.status(500).json({
-                error: 'Database initialization failed',
-                message: error.mesWsage
-            });
-        }
-    }
-    next();
-});
+// app.use(async (req, res, next) => {
+//     if (!dbInitialized) {
+//         try {
+//             await initializeDatabase();
+//             dbInitialized = true;
+//         } 
+//         catch (error) {
+//             console.error('❌ Database initialization failed:', error.message);
+//             return res.status(500).json({
+//                 error: 'Database initialization failed',
+//                 message: error.mesWsage
+//             });
+//         }
+//     }
+//     next();
+// });
 
 // Import routes
 import dailySummaryRoutes from './routes/dailySheetSummary.js';
