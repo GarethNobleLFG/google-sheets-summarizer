@@ -1,11 +1,7 @@
 import dotenv from 'dotenv';
-import twilio from 'twilio';
 import nodemailer from 'nodemailer';
 
 dotenv.config();
-
-// Initialize services
-//const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 const emailTransporter = nodemailer.createTransport({
     service: 'gmail',
@@ -17,16 +13,6 @@ const emailTransporter = nodemailer.createTransport({
 
 export async function sendMessage(message) {
     try {
-        /*
-        // Send via SMS
-        await twilioClient.messages.create({
-            body: `Daily Budget Summary:\n\n${message.text}`,
-            from: process.env.TWILIO_PHONE_NUMBER,
-            to: process.env.YOUR_PHONE_NUMBER
-        });
-        */
-
-        // Send email
         await emailTransporter.sendMail({
             from: process.env.EMAIL_USER,
             to: process.env.YOUR_EMAIL,
@@ -36,7 +22,6 @@ export async function sendMessage(message) {
                 month: '2-digit',
                 day: '2-digit'
             })}`,
-            text: message.text,
             html: message.html
         });
 

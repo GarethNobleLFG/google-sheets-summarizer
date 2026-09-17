@@ -1,13 +1,19 @@
 import dotenv from 'dotenv';
-import { authenticate, getSheetData } from './googleSheetsApi.js';
-import { convertToCSVString } from '../../utils/dataFormatter.js';
-import { extractSpreadsheetId } from '../../utils/urlHelper.js';
+import { authenticateGoogleClient, fetchSpreadsheetValues } from '../repositories/http/google.repository.js';
+import { convertToCSVString } from '../utils/dataFormatter.js';
+import { extractSpreadsheetId } from '../utils/urlHelper.js';
 
 dotenv.config();
 
+/**
+ * Extracts and prepares Google Sheet content for AI analysis.
+ * 
+ * @param {string} spreadsheetUrl - Full Google Sheet URL
+ * @param {object} options - Processing options (range, filter empty rows, etc.)
+ * @returns {Promise<object>} Processed sheet data formatted for AI prompts
+ */
 export async function processSheetForAI(spreadsheetUrl, options = {}) {
-
-    // Extract the spreadsheet ID.
+    // Extract the spreadsheet ID from URL
     const spreadsheetId = extractSpreadsheetId(spreadsheetUrl);
 
     try {
@@ -30,11 +36,11 @@ export async function processSheetForAI(spreadsheetUrl, options = {}) {
             auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER,
             client_x509_cert_url: process.env.GOOGLE_CERT_URL,
             universe_domain: process.env.GOOGLE_UNIVERSE_DOMAIN
-        }
+        };
 
-        // Step 1: Authenticate
+        // Step 1: Authenticate via Repository
         console.log('Authenticating with Google Sheets...');
-        const authResult = await authenticate(credentials);
+        const authResult = await authenticateGoogleClient(credentials);
 
         if (!authResult.success) {
             throw new Error(`Authentication failed: ${authResult.error}`);
@@ -42,9 +48,9 @@ export async function processSheetForAI(spreadsheetUrl, options = {}) {
 
         const { sheets } = authResult;
 
-        // Step 2: Get sheet data
+        // Step 2: Fetch sheet values via Repository
         console.log('Fetching sheet data...');
-        const sheetResult = await getSheetData(sheets, spreadsheetId, range);
+        const sheetResult = await fetchSpreadsheetValues(sheets, spreadsheetId, range);
 
         if (!sheetResult.success) {
             throw new Error(`Failed to fetch sheet data: ${sheetResult.error}`);
@@ -69,32 +75,24 @@ export async function processSheetForAI(spreadsheetUrl, options = {}) {
         const headers = processedData[0] || [];
         const dataRows = processedData.slice(1);
 
-        // Step 5: Generate CSV content
+        // Step 5: Format data to CSV content for AI
         const csvContent = convertToCSVString(processedData);
 
-        // Step 6: Generate summary for better AI context.
+        // Step 6: Summary metadata for AI context
         const summary = {
             totalRows: dataRows.length,
             totalColumns: headers.length,
             columnNames: headers,
         };
 
-        // Complete result object
         const result = {
             success: true,
             spreadsheetId,
             range,
             timestamp: new Date().toISOString(),
-
             headers,
-
-            // Processed formats
             csvContent,
-
-            // Metadata and analysis
             summary,
-
-            // Quick access properties
             rowCount: dataRows.length,
             columnCount: headers.length,
             isEmpty: dataRows.length === 0
@@ -102,10 +100,8 @@ export async function processSheetForAI(spreadsheetUrl, options = {}) {
 
         console.log(`Successfully processed sheet: ${dataRows.length} rows, ${headers.length} columns`);
 
-        // Finally return the needed context for AI to analyze.
         return result;
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error in processSheetForAI:', error);
 
         return {

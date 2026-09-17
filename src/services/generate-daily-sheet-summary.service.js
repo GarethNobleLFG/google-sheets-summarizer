@@ -1,25 +1,27 @@
 import dotenv from 'dotenv';
-import OpenAI from 'openai';
-import { sendMessage } from './messagingService.js';
-import { processSheetForAI } from './google/googleSheetService.js';
-import { create } from '../modules/sheetSummary.js';
+import { sendMessage } from './node-mailer.service.js';
+import { processSheetForAI } from './google-sheet-extract.service.js';
+import { sendChat } from '../repositories/http/openai.repository.js';
 
 dotenv.config();
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
+export async function generateDailySummary() {
+    const spreadsheetUrl = process.env.GOOGLE_SHEET_URL;
+    const sheetName = process.env.SHEET_NAME;
 
-export async function generateDailySummary(spreadsheetUrl, sheetOptions) {
+    const sheetOptions = {
+        range: sheetName ? `${sheetName}!A:Z` : 'A:Z',
+        filterEmptyRows: true,
+        maxPreviewRows: 100
+    };
+
     try {
-        // Step 1: Process and get result from google sheet using the URL
         const sheetData = await processSheetForAI(spreadsheetUrl, sheetOptions);
 
         if (!sheetData.success) {
             throw new Error(`Failed to process sheet: ${sheetData.error}`);
         }
 
-        // Step 2: Create the analysis prompt for OpenAI to collect correct data from sheet
         const analysisPrompt = `
             RULES:
                 - Use exact dollar amounts from the data
@@ -36,9 +38,7 @@ export async function generateDailySummary(spreadsheetUrl, sheetOptions) {
             Format your response like this and only this:
         `;
 
-        // Step 3: Make OpenAI API call for analysis
-        const analysisResponse = await openai.chat.completions.create({
-            model: "gpt-4o",
+        const analysisData = await sendChat({
             messages: [
                 {
                     role: "system",
@@ -49,13 +49,11 @@ export async function generateDailySummary(spreadsheetUrl, sheetOptions) {
                     content: analysisPrompt
                 }
             ],
-            max_tokens: 2500,
+            model: "gpt-4o",
+            maxTokens: 2500,
             temperature: 0.1
         });
 
-        const analysisData = analysisResponse.choices[0].message.content?.trim() || '';
-
-        // Step 4: Create summary prompt
         const summaryPrompt = `
             BUDGET DATA:
             ${analysisData}
@@ -78,10 +76,6 @@ export async function generateDailySummary(spreadsheetUrl, sheetOptions) {
 
             Make two of the exact same responses but just in the following formats:
 
-            TEXT_VERSION_START
-            [Plain text version - no formatting, just clean readable text]
-            TEXT_VERSION_END
-
             HTML_VERSION_START
             [Same content but formatted as clean HTML for email]
             Use: <h3> for section headers, <strong> for emphasis, <ul><li> for lists, 
@@ -89,9 +83,7 @@ export async function generateDailySummary(spreadsheetUrl, sheetOptions) {
             HTML_VERSION_END
         `;
 
-        // Step 5: Call OpenAI again and summarize the important data
-        const summaryResponse = await openai.chat.completions.create({
-            model: "gpt-4o",
+        const fullResponse = await sendChat({
             messages: [
                 {
                     role: "system",
@@ -102,37 +94,16 @@ export async function generateDailySummary(spreadsheetUrl, sheetOptions) {
                     content: summaryPrompt
                 }
             ],
-            max_tokens: 2500,
+            model: "gpt-4o",
+            maxTokens: 2500,
             temperature: 0.1
         });
 
-        // Step 6: Parse the response to extract both message types
-        const fullResponse = summaryResponse.choices[0].message.content;
-
-        const textMatch = fullResponse.match(/TEXT_VERSION_START([\s\S]*?)TEXT_VERSION_END/);
         const htmlMatch = fullResponse.match(/HTML_VERSION_START([\s\S]*?)HTML_VERSION_END/);
 
-        const textVersion = textMatch ? textMatch[1].trim() : fullResponse;
         const htmlVersion = htmlMatch ? htmlMatch[1].trim() : `<p>${fullResponse.replace(/\n/g, '</p><p>')}</p>`;
 
-        // // Step 7: Save to database
-        // try {
-        //     const summaryData = {
-        //         summary_type: 'Daily Budget Summary',
-        //         text_version: textVersion,  
-        //         html_version: htmlVersion  
-        //     };
-
-        //     const savedSummary = await create(summaryData);
-        //     console.log('Summary saved to database with ID:', savedSummary.id);
-        // }
-        // catch (dbError) {
-        //     console.log('Failed to save to database in API call: ', dbError.message);
-        // }
-
-        // Step 8: Send the message
         const response = {
-            text: textVersion,
             html: htmlVersion,
             messageType: 'Daily Budget Summary',
             success: true
@@ -142,12 +113,11 @@ export async function generateDailySummary(spreadsheetUrl, sheetOptions) {
 
         return {
             success: true,
-            text: textVersion,
             html: htmlVersion,
             messageType: 'Daily Budget Summary'
         };
 
-    }
+    } 
     catch (error) {
         console.error('Error in daily summary generation:', error);
         return {
