@@ -38,21 +38,16 @@ export async function generateDailySummary() {
             Format your response like this and only this:
         `;
 
-        const analysisData = await sendChat({
-            messages: [
-                {
-                    role: "system",
-                    content: "You are a data analyist."
-                },
-                {
-                    role: "user",
-                    content: analysisPrompt
-                }
-            ],
-            model: "gpt-4o",
-            maxTokens: 2500,
-            temperature: 0.1
-        });
+        const analysisData = await sendChat([
+            {
+                role: "system",
+                content: "You are a data analyist."
+            },
+            {
+                role: "user",
+                content: analysisPrompt
+            }
+        ]);
 
         const summaryPrompt = `
             BUDGET DATA:
@@ -83,24 +78,18 @@ export async function generateDailySummary() {
             HTML_VERSION_END
         `;
 
-        const fullResponse = await sendChat({
-            messages: [
-                {
-                    role: "system",
-                    content: "You are a professional financial analyst who provides clear, actionable budget insights."
-                },
-                {
-                    role: "user",
-                    content: summaryPrompt
-                }
-            ],
-            model: "gpt-4o",
-            maxTokens: 2500,
-            temperature: 0.1
-        });
+        const fullResponse = await sendChat([
+            {
+                role: "system",
+                content: "You are a professional financial analyst who provides clear, actionable budget insights."
+            },
+            {
+                role: "user",
+                content: summaryPrompt
+            }
+        ]);
 
         const htmlMatch = fullResponse.match(/HTML_VERSION_START([\s\S]*?)HTML_VERSION_END/);
-
         const htmlVersion = htmlMatch ? htmlMatch[1].trim() : `<p>${fullResponse.replace(/\n/g, '</p><p>')}</p>`;
 
         const response = {
@@ -117,7 +106,7 @@ export async function generateDailySummary() {
             messageType: 'Daily Budget Summary'
         };
 
-    } 
+    }
     catch (error) {
         console.error('Error in daily summary generation:', error);
         return {

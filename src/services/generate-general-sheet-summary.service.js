@@ -38,23 +38,17 @@ export async function generateGeneralSummary() {
             Format your response like this and only this:
         `;
 
-        const analysisData = await sendChat({
-            messages: [
-                {
-                    role: "system",
-                    content: "You are a data analyist."
-                },
-                {
-                    role: "user",
-                    content: analysisPrompt
-                }
-            ],
-            model: "gpt-4o",
-            maxTokens: 2500,
-            temperature: 0.1
-        });
+        const analysisData = await sendChat([
+            {
+                role: "system",
+                content: "You are a data analyist."
+            },
+            {
+                role: "user",
+                content: analysisPrompt
+            }
+        ]);
 
-        // Step 4: Create general summary prompt
         const generalPrompt = `
             You are a financial analyst for Google Sheets. Analyze this budget data.
 
@@ -79,24 +73,18 @@ export async function generateGeneralSummary() {
             HTML_VERSION_END
         `;
 
-        const fullResponse = await sendChat({
-            messages: [
-                {
-                    role: "system",
-                    content: "You are a professional financial analyst who provides clear, actionable budget insights."
-                },
-                {
-                    role: "user",
-                    content: generalPrompt
-                }
-            ],
-            model: "gpt-4o",
-            maxTokens: 2500,
-            temperature: 0.1
-        });
+        const fullResponse = await sendChat([
+            {
+                role: "system",
+                content: "You are a professional financial analyst who provides clear, actionable budget insights."
+            },
+            {
+                role: "user",
+                content: generalPrompt
+            }
+        ]);
 
         const htmlMatch = fullResponse.match(/HTML_VERSION_START([\s\S]*?)HTML_VERSION_END/);
-
         const htmlVersion = htmlMatch ? htmlMatch[1].trim() : `<p>${fullResponse.replace(/\n/g, '</p><p>')}</p>`;
 
         const response = {
@@ -113,7 +101,7 @@ export async function generateGeneralSummary() {
             messageType: 'General Budget Summary'
         };
 
-    } 
+    }
     catch (error) {
         console.error('Error in general summary generation:', error);
         return {
