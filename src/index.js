@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import dailySummaryRoutes from './src/routes/generate-daily-sheet-summary.route.js';
-import generalSummaryRoutes from './src/routes/generate-general-sheet-summary.route.js';
+import dailySummaryRoutes from './routes/generate-daily-sheet-summary.route.js';
+import generalSummaryRoutes from './routes/generate-general-sheet-summary.route.js';
 
 dotenv.config();
 
