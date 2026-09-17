@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/GarethNobleLFG/google-sheets-summarizer#readme",
   "dependencies": {
+    "cors": "^2.8.6",
     "csv-parser": "^3.2.0",
     "csv-writer": "^1.6.0",
     "dotenv": "^17.2.3",

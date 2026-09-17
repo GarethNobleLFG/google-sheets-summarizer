@@ -1,19 +1,11 @@
 import dotenv from 'dotenv';
 import { authenticateGoogleClient, fetchSpreadsheetValues } from '../repositories/http/google.repository.js';
-import { convertToCSVString } from '../utils/dataFormatter.js';
-import { extractSpreadsheetId } from '../utils/urlHelper.js';
+import { convertToCSVString } from '../utils/data-formatter.util.js';
+import { extractSpreadsheetId } from '../utils/extract-sheet-id.util.js';
 
 dotenv.config();
 
-/**
- * Extracts and prepares Google Sheet content for AI analysis.
- * 
- * @param {string} spreadsheetUrl - Full Google Sheet URL
- * @param {object} options - Processing options (range, filter empty rows, etc.)
- * @returns {Promise<object>} Processed sheet data formatted for AI prompts
- */
 export async function processSheetForAI(spreadsheetUrl, options = {}) {
-    // Extract the spreadsheet ID from URL
     const spreadsheetId = extractSpreadsheetId(spreadsheetUrl);
 
     try {
@@ -38,7 +30,6 @@ export async function processSheetForAI(spreadsheetUrl, options = {}) {
             universe_domain: process.env.GOOGLE_UNIVERSE_DOMAIN
         };
 
-        // Step 1: Authenticate via Repository
         console.log('Authenticating with Google Sheets...');
         const authResult = await authenticateGoogleClient(credentials);
 
@@ -48,7 +39,6 @@ export async function processSheetForAI(spreadsheetUrl, options = {}) {
 
         const { sheets } = authResult;
 
-        // Step 2: Fetch sheet values via Repository
         console.log('Fetching sheet data...');
         const sheetResult = await fetchSpreadsheetValues(sheets, spreadsheetId, range);
 
@@ -62,7 +52,6 @@ export async function processSheetForAI(spreadsheetUrl, options = {}) {
             throw new Error('No data found in the specified sheet range');
         }
 
-        // Step 3: Process and clean data
         let processedData = rawData;
 
         if (filterEmptyRows) {
@@ -71,14 +60,11 @@ export async function processSheetForAI(spreadsheetUrl, options = {}) {
             );
         }
 
-        // Step 4: Extract headers and data rows
         const headers = processedData[0] || [];
         const dataRows = processedData.slice(1);
 
-        // Step 5: Format data to CSV content for AI
         const csvContent = convertToCSVString(processedData);
 
-        // Step 6: Summary metadata for AI context
         const summary = {
             totalRows: dataRows.length,
             totalColumns: headers.length,
@@ -101,7 +87,8 @@ export async function processSheetForAI(spreadsheetUrl, options = {}) {
         console.log(`Successfully processed sheet: ${dataRows.length} rows, ${headers.length} columns`);
 
         return result;
-    } catch (error) {
+    } 
+    catch (error) {
         console.error('Error in processSheetForAI:', error);
 
         return {
